@@ -4,7 +4,7 @@
   "description": "This app will supply you with a recommended bike route based on your time of travel and will include recommended clothing based on the weather during your travel times.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run mocha",
+    "test": "mocha --compilers js:babel-register src/test/**/*.js*",
     "mkdir": "mkdir -p build",
     "build": "npm run clean && npm run mkdir && npm run build:html && npm run build:css && npm run build:js",
     "watch": "npm run watch:html & npm run watch:css & npm run watch:js",
@@ -30,6 +30,9 @@
     "build:js:minified": "npm run clean:js:minified && webpack --minify",
     "watch:js:minified": "npm run build:js:minified && webpack --progress --colors --watch --minify",
     "clean:js:minified": "rm -f build/$npm_package_name.$npm_package_version.min.js build/$npm_package_name.$npm_package_version.min.js.map"
+  },
+  "babel": {
+    "presets": ["es2015", "react"]
   },
   "repository": {
     "type": "git",
@@ -59,6 +62,7 @@
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "babel-register": "^6.14.0",
     "chai": "^3.5.0",
     "chokidar-cli": "^1.2.0",
     "less": "^2.7.1",
