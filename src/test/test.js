@@ -10,6 +10,6 @@ describe('Main component', () => {
         renderer.render(<Main />)
 
         const result = renderer.getRenderOutput()
-        result.props.children.props.children.should.equal('Hello World!')
+        result.props.children.props.children.should.equal('Hello World!!')
     })
 })
