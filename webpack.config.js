@@ -11,7 +11,11 @@ var plugins = [];
 
 if (minify) {
     filename.splice(filename.length - 1, 0, 'min');
-    plugins.push(new webpack.optimize.UglifyJsPlugin());
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        }
+    }));
 }
 
 module.exports = {
