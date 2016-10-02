@@ -5,7 +5,8 @@ import { should } from 'chai'
 should()
 
 import ConnectedMain, { Main } from '../components/Main'
-import Card from '../components/Card'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import Paper from 'material-ui/Paper'
 import { SearchForm } from '../components/SearchForm'
 
 describe('Main component', () => {
@@ -18,29 +19,30 @@ describe('Main component', () => {
         resultChildren[0].type.should.be.a('function')
         resultChildren[0].props.should.have.property('title')
     })
-    it('Contains the Card', () => {
+    it('Contains a Paper component for the searchForm', () => {
         const renderer = TestUtils.createRenderer()
         renderer.render(<Main />)
 
         const result = renderer.getRenderOutput()
         let resultChildren = result.props.children.props.children
         resultChildren[1].type.should.be.a('function')
-        resultChildren[1].type.name.should.equal('Card')
+        resultChildren[1].type.name.should.equal('Paper')
     })
 })
 
-describe('Card component', () => {
-    it('Contains the Paper component with the SearchForm', () => {
+describe('Paper component with SearchForm', () => {
+    it('Contains the SearchForm', () => {
         const renderer = TestUtils.createRenderer()
-        renderer.render(<Card />)
+        renderer.render(
+            <MuiThemeProvider>
+                <Paper children={<SearchForm />} />
+            </MuiThemeProvider>
+        )
 
         const result = renderer.getRenderOutput()
         let resultChildren = result.props.children
-        let paperChildrenProp = resultChildren.props.children.type.WrappedComponent
         resultChildren.type.should.be.a('function')
-        resultChildren.type.name.should.equal('Paper')
-        paperChildrenProp.should.be.a('function')
-        paperChildrenProp.name.should.equal('SearchForm')
+        resultChildren.type.name.should.equal('SearchForm')
     })
 })
 

@@ -17,9 +17,7 @@ export class Main extends React.Component {
                         showMenuIconButton={false}
                         style={{backgroundColor: '#558B2F'}}
                     />
-                <Card>
                     <Paper className='search-card' zDepth={1} children={<SearchForm />} />
-                </Card>
                     <div>
                         <h4>{this.props.cityDestination}, {this.props.regionDestination}</h4>
                         <p>Temp: {this.props.destinationTemp}</p>
@@ -27,11 +25,7 @@ export class Main extends React.Component {
                         <p>Precipitation: {this.props.destinationPrecip}</p>
                         <p>Snow: {this.props.destinationSnow}</p>
                     </div>
-                    <div>
-                        <Card>
-                            <Paper className='card' zDepth={1} />
-                        </Card>
-                    </div>
+                    <Paper className='card' zDepth={1} />
                 </div>
             </MuiThemeProvider>
         )
