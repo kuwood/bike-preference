@@ -3,7 +3,10 @@ import { connect } from 'react-redux'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import AppBar from 'material-ui/AppBar'
-import SearchCard from './SearchCard'
+import Card from './Card'
+import DirectionsCard from './DirectionsCard'
+import Paper from 'material-ui/Paper'
+import SearchForm from './SearchForm'
 
 export class Main extends React.Component {
     render() {
@@ -14,13 +17,20 @@ export class Main extends React.Component {
                         showMenuIconButton={false}
                         style={{backgroundColor: '#558B2F'}}
                     />
-                    <SearchCard />
+                <Card>
+                    <Paper className='search-card' zDepth={1} children={<SearchForm />} />
+                </Card>
                     <div>
                         <h4>{this.props.cityDestination}, {this.props.regionDestination}</h4>
                         <p>Temp: {this.props.destinationTemp}</p>
                         <p>Wind: {this.props.destinationWind}</p>
                         <p>Precipitation: {this.props.destinationPrecip}</p>
                         <p>Snow: {this.props.destinationSnow}</p>
+                    </div>
+                    <div>
+                        <Card>
+                            <Paper className='card' zDepth={1} />
+                        </Card>
                     </div>
                 </div>
             </MuiThemeProvider>

@@ -5,7 +5,7 @@ import { should } from 'chai'
 should()
 
 import ConnectedMain, { Main } from '../components/Main'
-import SearchCard from '../components/SearchCard'
+import Card from '../components/Card'
 import { SearchForm } from '../components/SearchForm'
 
 describe('Main component', () => {
@@ -18,21 +18,21 @@ describe('Main component', () => {
         resultChildren[0].type.should.be.a('function')
         resultChildren[0].props.should.have.property('title')
     })
-    it('Contains the SearchCard', () => {
+    it('Contains the Card', () => {
         const renderer = TestUtils.createRenderer()
         renderer.render(<Main />)
 
         const result = renderer.getRenderOutput()
         let resultChildren = result.props.children.props.children
         resultChildren[1].type.should.be.a('function')
-        resultChildren[1].type.name.should.equal('SearchCard')
+        resultChildren[1].type.name.should.equal('Card')
     })
 })
 
-describe('SearchCard component', () => {
+describe('Card component', () => {
     it('Contains the Paper component with the SearchForm', () => {
         const renderer = TestUtils.createRenderer()
-        renderer.render(<SearchCard />)
+        renderer.render(<Card />)
 
         const result = renderer.getRenderOutput()
         let resultChildren = result.props.children
