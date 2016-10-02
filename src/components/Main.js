@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import AppBar from 'material-ui/AppBar'
-import Card from './Card'
-import DirectionsCard from './DirectionsCard'
 import Paper from 'material-ui/Paper'
 import SearchForm from './SearchForm'
 
