@@ -9,7 +9,6 @@ injectTapEventPlugin()
 import Main from './src/components/Main.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log(store)
     render(
         <Provider store={store}>
             <Main />

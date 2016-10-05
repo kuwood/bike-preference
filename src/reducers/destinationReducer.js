@@ -24,7 +24,14 @@ function destinationReducer(state = initialState, action) {
             console.log(action.cityDestination, 'action city')
             return Object.assign({}, state, {
                 regionDestination: action.regionDestination,
-                cityDestination: action.cityDestination
+                cityDestination: action.cityDestination,
+                latLngDestination: action.latLngDestination
+            })
+        case actions.SET_DESTINATION:
+            console.log('hit setDestinationRoute reducer');
+            console.log(action.setDestinationRoute, 'directions');
+            return Object.assign({}, state, {
+                destinationRoute: action.destinationRoute
             })
         default:
             return state

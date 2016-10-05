@@ -4,13 +4,15 @@ import { connect } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import AppBar from 'material-ui/AppBar'
 import Paper from 'material-ui/Paper'
+
 import SearchForm from './SearchForm'
+import Directions from './Directions'
 
 export class Main extends React.Component {
     render() {
         return (
             <MuiThemeProvider>
-                <div>
+                <div  className='wrapper'>
                     <AppBar title="Fair Weather Biker"
                         showMenuIconButton={false}
                         style={{backgroundColor: '#558B2F'}}
@@ -23,7 +25,7 @@ export class Main extends React.Component {
                         <p>Precipitation: {this.props.destinationPrecip}</p>
                         <p>Snow: {this.props.destinationSnow}</p>
                     </div>
-                    <Paper className='card' zDepth={1} />
+                    <Paper className='card directions-card' zDepth={2} children={<Directions />}/>
                 </div>
             </MuiThemeProvider>
         )

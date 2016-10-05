@@ -13,26 +13,55 @@ export class SearchForm extends React.Component {
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
+
     componentDidMount() {
         let input = document.getElementById('destination-input')
         let options = {
-          types: ['address']
+            types: ['address']
         }
         let autocomplete = new google.maps.places.Autocomplete(input, options)
-        let searchForm = this
+
         autocomplete.addListener('place_changed', () => {
             let places = autocomplete.getPlace()
             let city
             let region
+            let latLng = {
+                lat: places.geometry.location.lat(),
+                lng: places.geometry.location.lng()
+            }
+
             places.address_components.forEach((item) => {
                 if (item.types[0] === 'locality') city = item.long_name
                 if (item.types[0] === 'administrative_area_level_1') region = item.short_name
             })
-            console.log(city, region)
-            this.props.dispatch(actions.setDestination(city, region))
+
+            this.props.dispatch(actions.setDestination(city, region, latLng))
         })
-        console.log('autocomplete')
     }
+
+    calcRoute(start, end) {
+        let directionsService = new google.maps.DirectionsService()
+        let directionsDisplay = new google.maps.DirectionsRenderer()
+
+        let request = {
+            origin:start,
+            destination:end,
+            travelMode: 'BICYCLING'
+        }
+        directionsService.route(request, (response, status) => {
+            if (status == 'OK') {
+                document.getElementById('panel').innerHTML = ""
+                directionsDisplay.setDirections(response);
+                let map = new google.maps.Map(document.getElementById('map'));
+                directionsDisplay.setPanel(document.getElementById('panel'))
+                directionsDisplay.setMap(map)
+            }
+        });
+        // TODO: make directionsDisplay state
+        //this.props.dispatch(actions.setDestinationRoute(directionsDisplay))
+
+    }
+
     handleSubmit(e) {
         e.preventDefault()
         let destination = this.refs.destination.input.value
@@ -44,9 +73,18 @@ export class SearchForm extends React.Component {
             region: this.props.regionDestination,
             city: this.props.cityDestination
         }
-        console.log(weatherDestination)
+
+        this.calcRoute(
+            new google.maps.LatLng(43.6126718,-116.204472),
+            new google.maps.LatLng(
+                this.props.latLngDestination.lat,
+                this.props.latLngDestination.lng
+            )
+        )
+
         this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
     }
+
     render() {
 
         return (
@@ -101,6 +139,7 @@ let mapStateToProps = (state, props) => {
     return {
         regionDestination: state.destinationReducer.regionDestination,
         cityDestination: state.destinationReducer.cityDestination,
+        latLngDestination: state.destinationReducer.latLngDestination
     }
 }
 
