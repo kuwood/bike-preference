@@ -75,11 +75,13 @@ export class SearchForm extends React.Component {
         }
 
         this.calcRoute(
+            // TODO: Remove starting location hard coding and use gMaps autocomplete
             new google.maps.LatLng(43.6126718,-116.204472),
             new google.maps.LatLng(
                 this.props.latLngDestination.lat,
                 this.props.latLngDestination.lng
             )
+
         )
 
         this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
