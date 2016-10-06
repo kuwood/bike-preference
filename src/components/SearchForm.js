@@ -91,6 +91,7 @@ export class SearchForm extends React.Component {
 
         return (
             <form className='search-form' onSubmit={this.handleSubmit}>
+                <h3 className="form-title">Plan your route</h3>
                 <TextField
                     placeholder=""
                     id="destination-input"
