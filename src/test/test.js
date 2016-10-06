@@ -56,9 +56,9 @@ describe('SearchForm component', () => {
         result.props.should.have.property('className')
         result.props.className.should.equal('search-form')
         result.props.should.have.property('onSubmit')
-        result.props.children.length.should.equal(5)
-        result.props.children[0].props.id.should.equal('destination-input')
-        result.props.children[1].props.id.should.equal('leave-time')
+        result.props.children.length.should.equal(6)
+        result.props.children[1].props.id.should.equal('destination-input')
+        result.props.children[2].props.id.should.equal('leave-time')
 
     })
 })
