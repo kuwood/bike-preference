@@ -5,12 +5,19 @@
     align-items: center;
 }
 
+.search-form {
+    background-color: rgba(0, 0, 0, 0.35);
+    padding: 15px;
+    border-radius: 5px;
+}
+
 .card {
     width: 100%;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 .search-card {
@@ -18,6 +25,27 @@
     height: 450px;
     background-image: url('http://i.imgur.com/8DfeEdo.jpg');
     background-size: cover;
+}
+
+.weather-card {
+    .card;
+    max-width: 700px;
+    height: 150px;
+}
+
+.weather-container {
+    display: flex;
+    flex-flow: row wrap;
+    text-align: center;
+    flex: 1;
+}
+
+.weather-location {
+    flex: 1 100%;
+}
+
+.weather-col {
+    flex: 1 50%;
 }
 
 .directions-card {
@@ -40,9 +68,5 @@
     height: 400px;
     width: 100%;
     max-width: 700px;
-
-}
-
-.directions-panel {
 
 }

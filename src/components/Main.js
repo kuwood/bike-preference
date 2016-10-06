@@ -6,6 +6,7 @@ import AppBar from 'material-ui/AppBar'
 import Paper from 'material-ui/Paper'
 
 import SearchForm from './SearchForm'
+import Weather from './Weather'
 import Directions from './Directions'
 
 export class Main extends React.Component {
@@ -13,18 +14,12 @@ export class Main extends React.Component {
         return (
             <MuiThemeProvider>
                 <div  className='wrapper'>
-                    <AppBar title="Fair Weather Biker"
+                    <AppBar title="Fair Weather Cyclist"
                         showMenuIconButton={false}
                         style={{backgroundColor: '#558B2F'}}
                     />
-                    <Paper className='search-card' zDepth={1} children={<SearchForm />} />
-                    <div>
-                        <h4>{this.props.cityDestination}, {this.props.regionDestination}</h4>
-                        <p>Temp: {this.props.destinationTemp}</p>
-                        <p>Wind: {this.props.destinationWind}</p>
-                        <p>Precipitation: {this.props.destinationPrecip}</p>
-                        <p>Snow: {this.props.destinationSnow}</p>
-                    </div>
+                <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
+                    <Paper className='card weather-card' zDepth={2} children={<Weather />}/>
                     <Paper className='card directions-card' zDepth={2} children={<Directions />}/>
                 </div>
             </MuiThemeProvider>

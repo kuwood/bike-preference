@@ -90,7 +90,6 @@ export class SearchForm extends React.Component {
     render() {
 
         return (
-
             <form className='search-form' onSubmit={this.handleSubmit}>
                 <TextField
                     placeholder=""
@@ -131,7 +130,6 @@ export class SearchForm extends React.Component {
                     label="Submit"
                     backgroundColor="#558B2F"
                 />
-
             </form>
         )
     }
