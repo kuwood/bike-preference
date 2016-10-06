@@ -16,10 +16,7 @@ export class SearchForm extends React.Component {
 
     componentDidMount() {
         let input = document.getElementById('destination-input')
-        let options = {
-            types: ['address']
-        }
-        let autocomplete = new google.maps.places.Autocomplete(input, options)
+        let autocomplete = new google.maps.places.Autocomplete(input)
 
         autocomplete.addListener('place_changed', () => {
             let places = autocomplete.getPlace()
@@ -111,7 +108,7 @@ export class SearchForm extends React.Component {
                 />
                 <TextField
                     id="return-destination"
-                    hintText="Return/Start destination"
+                    hintText="Start/Return location"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
                     underlineFocusStyle={{borderColor: '#558B2F'}}

@@ -18,7 +18,7 @@ export class Main extends React.Component {
                         showMenuIconButton={false}
                         style={{backgroundColor: '#558B2F'}}
                     />
-                <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
+                    <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
                     <Paper className='card weather-card' zDepth={2} children={<Weather />}/>
                     <Paper className='card directions-card' zDepth={2} children={<Directions />}/>
                 </div>
