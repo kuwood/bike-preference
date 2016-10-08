@@ -27,11 +27,17 @@ function destinationReducer(state = initialState, action) {
                 cityDestination: action.cityDestination,
                 latLngDestination: action.latLngDestination
             })
-        case actions.SET_DESTINATION:
-            console.log('hit setDestinationRoute reducer');
-            console.log(action.setDestinationRoute, 'directions');
+        // case actions.SET_DESTINATION_ROUTE:
+        //     console.log('hit setDestinationRoute reducer');
+        //     console.log(action.setDestinationRoute, 'directions');
+        //     return Object.assign({}, state, {
+        //         destinationRoute: action.destinationRoute
+        //     })
+        case actions.SET_RETURN_DESTINATION:
             return Object.assign({}, state, {
-                destinationRoute: action.destinationRoute
+                cityReturnDestination: action.cityReturnDestination,
+                regionReturnDestination: action.regionReturnDestination,
+                latLngReturnDestination: action.latLngReturnDestination
             })
         default:
             return state

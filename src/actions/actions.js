@@ -14,11 +14,21 @@ export const setDestination = (city, region, latLng) => {
     }
 }
 
-export const SET_DESTINATION_ROUTE = 'SET_DESTINATION_ROUTE'
-export const setDestinationRoute = (directions) => {
-    console.log('hit setDestinationRoute action');
+// export const SET_DESTINATION_ROUTE = 'SET_DESTINATION_ROUTE'
+// export const setDestinationRoute = (directions) => {
+//     console.log('hit setDestinationRoute action');
+//     return {
+//         type: 'SET_DESTINATION_ROUTE',
+//         destinationRoute: directions
+//     }
+// }
+
+export const SET_RETURN_DESTINATION = 'SET_RETURN_DESTINATION'
+export const setReturnDestination = (city, region, latLng) => {
     return {
-        type: 'SET_DESTINATION_ROUTE',
-        destinationRoute: directions
+        type: 'SET_RETURN_DESTINATION',
+        cityReturnDestination: city,
+        regionReturnDestination: region,
+        latLngReturnDestination: latLng
     }
 }

@@ -9,17 +9,19 @@ import * as destinationActions from '../actions/destination'
 import * as actions from '../actions/actions'
 
 export class SearchForm extends React.Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
     componentDidMount() {
-        let input = document.getElementById('destination-input')
-        let autocomplete = new google.maps.places.Autocomplete(input)
+        let destinationInput = document.getElementById('destination-input')
+        let returnDestinationInput = document.getElementById('return-destination')
+        let destinationAutoComplete = new google.maps.places.Autocomplete(destinationInput)
+        let returnDestinationAutoComplete = new google.maps.places.Autocomplete(returnDestinationInput)
 
-        autocomplete.addListener('place_changed', () => {
-            let places = autocomplete.getPlace()
+        let fillInPlaces = (selector, action) => {
+            let places = selector.getPlace()
             let city
             let region
             let latLng = {
@@ -31,21 +33,27 @@ export class SearchForm extends React.Component {
                 if (item.types[0] === 'locality') city = item.long_name
                 if (item.types[0] === 'administrative_area_level_1') region = item.short_name
             })
+            this.props.dispatch(action(city, region, latLng))
+        }
+        google.maps.event.addListener(destinationAutoComplete, 'place_changed', () => {
+            fillInPlaces(destinationAutoComplete, actions.setDestination)
+        })
 
-            this.props.dispatch(actions.setDestination(city, region, latLng))
+        google.maps.event.addListener(returnDestinationAutoComplete, 'place_changed', () => {
+            fillInPlaces(returnDestinationAutoComplete, actions.setReturnDestination)
         })
     }
 
     calcRoute(start, end) {
         let directionsService = new google.maps.DirectionsService()
         let directionsDisplay = new google.maps.DirectionsRenderer()
-
         let request = {
             origin:start,
             destination:end,
             travelMode: 'BICYCLING'
         }
         directionsService.route(request, (response, status) => {
+            console.log(status, 'hiii status');
             if (status == 'OK') {
                 document.getElementById('panel').innerHTML = ""
                 directionsDisplay.setDirections(response);
@@ -73,7 +81,10 @@ export class SearchForm extends React.Component {
 
         this.calcRoute(
             // TODO: Remove starting location hard coding and use gMaps autocomplete
-            new google.maps.LatLng(43.6126718,-116.204472),
+            new google.maps.LatLng(
+                this.props.latLngReturnDestination.lat,
+                this.props.latLngReturnDestination.lng
+            ),
             new google.maps.LatLng(
                 this.props.latLngDestination.lat,
                 this.props.latLngDestination.lng
@@ -137,7 +148,10 @@ let mapStateToProps = (state, props) => {
     return {
         regionDestination: state.destinationReducer.regionDestination,
         cityDestination: state.destinationReducer.cityDestination,
-        latLngDestination: state.destinationReducer.latLngDestination
+        latLngDestination: state.destinationReducer.latLngDestination,
+        cityReturnDestination: state.destinationReducer.cityReturnDestination,
+        regionReturnDestination: state.destinationReducer.regionReturnDestination,
+        latLngReturnDestination: state.destinationReducer.latLngReturnDestination
     }
 }
 

@@ -9,7 +9,9 @@ const initialState = {
     destinationPrecip: 'N/A',
     destinationSnow: 'N/A',
     returnTime: 'N/A',
-    returnDestination: 'N/A',
+    cityReturnDestination: 'N/A',
+    regionReturnDestination: 'N/A',
+    latLngReturnDestination: 'N/A',
     returnWeather: 'N/A'
 }
 
