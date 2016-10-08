@@ -8,10 +8,13 @@ class Weather extends React.Component {
             <div className='weather-container'>
                 <h3 className='weather-location'>{this.props.cityDestination}, {this.props.regionDestination}</h3>
                 <div className='weather-col'>
-                    <p className='weather-item'>Temp: {this.props.destinationTemp}{String.fromCharCode(176)}</p>
-                    <p className='weather-item'>Wind: {this.props.destinationWind}</p>
+                    <p className='weather-item weather-temp'>{this.props.destinationTemp}{String.fromCharCode(176)}</p>
                 </div>
                 <div className='weather-col'>
+                    <img src={this.props.destinationWeatherIcon}></img>
+                </div>
+                <div className='weather-col'>
+                    <p className='weather-item'>Wind: {this.props.destinationWind}</p>
                     <p className='weather-item'>Precipitation: {this.props.destinationPrecip}</p>
                     <p className='weather-item'>Snow: {this.props.destinationSnow}</p>
                 </div>
@@ -27,7 +30,8 @@ let mapStateToProps = (state, props) => {
         destinationTemp: state.destinationReducer.destinationTemp,
         destinationWind: state.destinationReducer.destinationWind,
         destinationPrecip: state.destinationReducer.destinationPrecip,
-        destinationSnow: state.destinationReducer.destinationSnow
+        destinationSnow: state.destinationReducer.destinationSnow,
+        destinationWeatherIcon: state.destinationReducer.destinationWeatherIcon
     }
 }
 

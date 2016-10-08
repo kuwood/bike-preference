@@ -93,6 +93,7 @@ export class SearchForm extends React.Component {
         )
 
         this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
+        document.getElementById('dest-weather').scrollIntoView();
     }
 
     render() {
@@ -118,6 +119,7 @@ export class SearchForm extends React.Component {
                     ref="leaveTime"
                 />
                 <TextField
+                    placeholder=""
                     id="return-destination"
                     hintText="Start/Return location"
                     inputStyle={{color: '#fff'}}

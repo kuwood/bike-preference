@@ -22,7 +22,8 @@ export const fetchWeatherSuccess = (destinationWeather) => {
         destinationTemp: destinationWeather.temp.english,
         destinationWind: destinationWeather.wspd.english,
         destinationPrecip: destinationWeather.qpf.english,
-        destinationSnow: destinationWeather.snow.english
+        destinationSnow: destinationWeather.snow.english,
+        destinationWeatherIcon: destinationWeather.icon_url
     }
 }
 

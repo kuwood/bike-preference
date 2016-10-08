@@ -19,8 +19,8 @@ export class Main extends React.Component {
                         style={{backgroundColor: '#558B2F'}}
                     />
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
-                    <Paper className='card weather-card' zDepth={2} children={<Weather />}/>
-                    <Paper className='card directions-card' zDepth={2} children={<Directions />}/>
+                    <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />}/>
+                    <Paper className='card directions-card' zDepth={1} children={<Directions />}/>
                 </div>
             </MuiThemeProvider>
         )
@@ -29,12 +29,12 @@ export class Main extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
-        regionDestination: state.destinationReducer.regionDestination,
-        cityDestination: state.destinationReducer.cityDestination,
-        destinationTemp: state.destinationReducer.destinationTemp,
-        destinationWind: state.destinationReducer.destinationWind,
-        destinationPrecip: state.destinationReducer.destinationPrecip,
-        destinationSnow: state.destinationReducer.destinationSnow
+        // regionDestination: state.destinationReducer.regionDestination,
+        // cityDestination: state.destinationReducer.cityDestination,
+        // destinationTemp: state.destinationReducer.destinationTemp,
+        // destinationWind: state.destinationReducer.destinationWind,
+        // destinationPrecip: state.destinationReducer.destinationPrecip,
+        // destinationSnow: state.destinationReducer.destinationSnow
     }
 }
 

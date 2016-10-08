@@ -9,14 +9,16 @@ function destinationReducer(state = initialState, action) {
                 destinationTemp: action.destinationTemp,
                 destinationWind: action.destinationWind,
                 destinationPrecip: action.destinationPrecip,
-                destinationSnow: action.destinationSnow
+                destinationSnow: action.destinationSnow,
+                destinationWeatherIcon: action.destinationWeatherIcon
             })
         case destinationActions.FETCH_WEATHER_ERROR:
             return Object.assign({}, state, {
                 destinationTemp: 'N/A',
                 destinationWind: 'N/A',
                 destinationPrecip: 'N/A',
-                destinationSnow: 'N/A'
+                destinationSnow: 'N/A',
+                destinationWeatherIcon: 'N/A'
             })
         case actions.SET_DESTINATION:
             console.log('hit set destination reducer')

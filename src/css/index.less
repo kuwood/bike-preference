@@ -31,7 +31,7 @@
 
 .search-card {
     .card;
-    height: 450px;
+    height: calc(~"100vh - 64px");
     background-image: url('http://i.imgur.com/8DfeEdo.jpg');
     background-size: cover;
     background-position: center;
@@ -52,10 +52,21 @@
 
 .weather-location {
     flex: 1 100%;
+    margin: 15px 0 0 0;
 }
 
 .weather-col {
-    flex: 1 50%;
+    flex: 1;
+    align-self: center;
+}
+
+.weather-item {
+    text-align: left;
+}
+
+.weather-temp {
+    font-size: 42px;
+    text-align: center;
 }
 
 .directions-card {
@@ -78,5 +89,4 @@
     height: 400px;
     width: 100%;
     max-width: 700px;
-
 }
