@@ -41,6 +41,10 @@ function destinationReducer(state = initialState, action) {
                 regionReturnDestination: action.regionReturnDestination,
                 latLngReturnDestination: action.latLngReturnDestination
             })
+        case actions.HAVE_LOCATIONS:
+            return Object.assign({}, state, {
+                haveLocations: action.haveLocations
+            })
         default:
             return state
     }

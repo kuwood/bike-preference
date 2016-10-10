@@ -32,3 +32,11 @@ export const setReturnDestination = (city, region, latLng) => {
         latLngReturnDestination: latLng
     }
 }
+
+export const HAVE_LOCATIONS = 'HAVE_LOCATIONS'
+export const haveLocations = () => {
+    return {
+        type: 'HAVE_LOCATIONS',
+        haveLocations: true
+    }
+}

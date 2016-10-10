@@ -44,29 +44,6 @@ export class SearchForm extends React.Component {
         })
     }
 
-    calcRoute(start, end) {
-        let directionsService = new google.maps.DirectionsService()
-        let directionsDisplay = new google.maps.DirectionsRenderer()
-        let request = {
-            origin:start,
-            destination:end,
-            travelMode: 'BICYCLING'
-        }
-        directionsService.route(request, (response, status) => {
-            console.log(status, 'hiii status');
-            if (status == 'OK') {
-                document.getElementById('panel').innerHTML = ""
-                directionsDisplay.setDirections(response);
-                let map = new google.maps.Map(document.getElementById('map'));
-                directionsDisplay.setPanel(document.getElementById('panel'))
-                directionsDisplay.setMap(map)
-            }
-        });
-        // TODO: make directionsDisplay state
-        //this.props.dispatch(actions.setDestinationRoute(directionsDisplay))
-
-    }
-
     handleSubmit(e) {
         e.preventDefault()
         let destination = this.refs.destination.input.value
@@ -78,22 +55,9 @@ export class SearchForm extends React.Component {
             region: this.props.regionDestination,
             city: this.props.cityDestination
         }
-
-        this.calcRoute(
-            // TODO: Remove starting location hard coding and use gMaps autocomplete
-            new google.maps.LatLng(
-                this.props.latLngReturnDestination.lat,
-                this.props.latLngReturnDestination.lng
-            ),
-            new google.maps.LatLng(
-                this.props.latLngDestination.lat,
-                this.props.latLngDestination.lng
-            )
-
-        )
-
         this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
-        document.getElementById('dest-weather').scrollIntoView();
+        this.props.dispatch(actions.haveLocations())
+        if (this.props.haveLocations) document.getElementById('dest-weather').scrollIntoView();
     }
 
     render() {
@@ -153,7 +117,8 @@ let mapStateToProps = (state, props) => {
         latLngDestination: state.destinationReducer.latLngDestination,
         cityReturnDestination: state.destinationReducer.cityReturnDestination,
         regionReturnDestination: state.destinationReducer.regionReturnDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination
+        latLngReturnDestination: state.destinationReducer.latLngReturnDestination,
+        haveLocations: state.destinationReducer.haveLocations
     }
 }
 
