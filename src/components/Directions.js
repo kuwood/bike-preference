@@ -6,7 +6,6 @@ export class Directions extends React.Component {
     componentDidUpdate() {
         this.refs.panel.innerHTML = ""
         this.calcRoute(
-            // TODO: Remove starting location hard coding and use gMaps autocomplete
             new google.maps.LatLng(
                 this.props.latLngReturnDestination.lat,
                 this.props.latLngReturnDestination.lng
@@ -21,7 +20,6 @@ export class Directions extends React.Component {
 
     componentDidMount() {
         this.calcRoute(
-            // TODO: Remove starting location hard coding and use gMaps autocomplete
             new google.maps.LatLng(
                 this.props.latLngReturnDestination.lat,
                 this.props.latLngReturnDestination.lng
@@ -51,8 +49,6 @@ export class Directions extends React.Component {
                 directionsDisplay.setMap(map)
             }
         });
-        // TODO: make directionsDisplay state
-        //this.props.dispatch(actions.setDestinationRoute(directionsDisplay))
     }
 
     render() {

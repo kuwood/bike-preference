@@ -6,7 +6,6 @@ import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import * as destinationActions from '../actions/destination'
-import * as actions from '../actions/actions'
 
 export class SearchForm extends React.Component {
     constructor() {
@@ -36,27 +35,24 @@ export class SearchForm extends React.Component {
             this.props.dispatch(action(city, region, latLng))
         }
         google.maps.event.addListener(destinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(destinationAutoComplete, actions.setDestination)
+            fillInPlaces(destinationAutoComplete, destinationActions.setDestination)
         })
 
         google.maps.event.addListener(returnDestinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(returnDestinationAutoComplete, actions.setReturnDestination)
+            fillInPlaces(returnDestinationAutoComplete, destinationActions.setReturnDestination)
         })
     }
 
     handleSubmit(e) {
         e.preventDefault()
-        let destination = this.refs.destination.input.value
         let leaveTime = this.refs.leaveTime.refs.input.input.value
-        let returnDestination = this.refs.returnDestination.input.value
         let returnTime = this.refs.returnTime.refs.input.input.value
-        console.log(destination, leaveTime, returnDestination, returnTime);
         let weatherDestination = {
             region: this.props.regionDestination,
             city: this.props.cityDestination
         }
         this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
-        this.props.dispatch(actions.haveLocations())
+        this.props.dispatch(destinationActions.haveLocations())
         if (this.props.haveLocations) document.getElementById('dest-weather').scrollIntoView();
     }
 

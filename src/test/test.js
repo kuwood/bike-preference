@@ -94,7 +94,6 @@ describe('Directions component', () => {
         renderer.render(<Directions />)
 
         const result = renderer.getRenderOutput()
-        console.log(result.props.children)
         result.props.children[0].ref.should.equal('map')
         result.props.children[0].type.should.equal('div')
     })
@@ -103,7 +102,6 @@ describe('Directions component', () => {
         renderer.render(<Directions />)
 
         const result = renderer.getRenderOutput()
-        console.log(result.props.children)
         result.props.children[1].ref.should.equal('panel')
         result.props.children[1].type.should.equal('div')
     })

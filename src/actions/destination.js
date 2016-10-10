@@ -41,11 +41,8 @@ export const fetchWeatherError = (destinationWeather, error) => {
 
 export let fetchWeather = (destination, time) => {
     return dispatch => {
-        console.log(destination, 'fetchWeater')
         let timeFormatted = ConvertTimeFormat(time)
-        console.log(timeFormatted)
         let url = `http://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/${destination.region}/${destination.city}.json`
-        console.log(url)
         return fetch(url).then(response => {
             if (response.status < 200 || response.status >= 300) {
                 let error = new Error(response.statusText)
@@ -66,11 +63,40 @@ export let fetchWeather = (destination, time) => {
                     break
                 }
             }
-            console.log(destinationWeather)
+
             return dispatch(fetchWeatherSuccess(destinationWeather))
         })
         .catch(error => {
             return dispatch(console.log(error))
         })
+    }
+}
+
+export const SET_DESTINATION = 'SET_DESTINATION'
+export const setDestination = (city, region, latLng) => {
+    console.log("hit setRoute action");
+    return {
+        type: 'SET_DESTINATION',
+        cityDestination: city,
+        regionDestination: region,
+        latLngDestination: latLng
+    }
+}
+
+export const SET_RETURN_DESTINATION = 'SET_RETURN_DESTINATION'
+export const setReturnDestination = (city, region, latLng) => {
+    return {
+        type: 'SET_RETURN_DESTINATION',
+        cityReturnDestination: city,
+        regionReturnDestination: region,
+        latLngReturnDestination: latLng
+    }
+}
+
+export const HAVE_LOCATIONS = 'HAVE_LOCATIONS'
+export const haveLocations = () => {
+    return {
+        type: 'HAVE_LOCATIONS',
+        haveLocations: true
     }
 }

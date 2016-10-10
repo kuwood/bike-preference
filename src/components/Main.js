@@ -35,12 +35,6 @@ export class Main extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
-        // regionDestination: state.destinationReducer.regionDestination,
-        // cityDestination: state.destinationReducer.cityDestination,
-        // destinationTemp: state.destinationReducer.destinationTemp,
-        // destinationWind: state.destinationReducer.destinationWind,
-        // destinationPrecip: state.destinationReducer.destinationPrecip,
-        // destinationSnow: state.destinationReducer.destinationSnow
         haveLocations: state.destinationReducer.haveLocations
     }
 }
