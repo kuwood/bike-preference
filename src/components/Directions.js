@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-class Directions extends React.Component {
+export class Directions extends React.Component {
 
     componentDidUpdate() {
         this.refs.panel.innerHTML = ""

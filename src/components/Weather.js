@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-class Weather extends React.Component {
+export class Weather extends React.Component {
 
     render() {
         return (
