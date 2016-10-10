@@ -1,18 +1,18 @@
 const initialState = {
-    regionDestination: 'N/A',
-    cityDestination: 'N/A',
-    latLngDestination: 'N/A',
-    destinationRoute: 'N/A',
-    leaveTime: 'N/A',
-    destinationTemp: 'N/A',
-    destinationWind: 'N/A',
-    destinationPrecip: 'N/A',
-    destinationSnow: 'N/A',
-    returnTime: 'N/A',
-    cityReturnDestination: 'N/A',
-    regionReturnDestination: 'N/A',
-    latLngReturnDestination: 'N/A',
-    returnWeather: 'N/A'
+    regionDestination: null,
+    cityDestination: null,
+    latLngDestination: null,
+    destinationRoute: null,
+    leaveTime: null,
+    destinationTemp: null,
+    destinationWind: null,
+    destinationPrecip: null,
+    destinationSnow: null,
+    returnTime: null,
+    cityReturnDestination: null,
+    regionReturnDestination: null,
+    latLngReturnDestination: null,
+    returnWeather: null
 }
 
 export default initialState

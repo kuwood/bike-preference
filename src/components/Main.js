@@ -19,8 +19,14 @@ export class Main extends React.Component {
                         style={{backgroundColor: '#558B2F'}}
                     />
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
-                    <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />}/>
-                    <Paper className='card directions-card' zDepth={1} children={<Directions />}/>
+                    {this.props.latLngDestination ?
+                        <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />}/>
+                        : false
+                    }
+                    {this.props.latLngDestination ?
+                        <Paper className='card directions-card' zDepth={1} children={<Directions />}/>
+                        : false
+                    }
                 </div>
             </MuiThemeProvider>
         )
@@ -35,6 +41,7 @@ let mapStateToProps = (state, props) => {
         // destinationWind: state.destinationReducer.destinationWind,
         // destinationPrecip: state.destinationReducer.destinationPrecip,
         // destinationSnow: state.destinationReducer.destinationSnow
+        latLngDestination: state.destinationReducer.latLngDestination
     }
 }
 
