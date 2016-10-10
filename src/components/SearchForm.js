@@ -67,7 +67,7 @@ export class SearchForm extends React.Component {
                     hintText="Enter your destination"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
+
                     ref="destination"
                 />
                 <TimePicker
@@ -75,7 +75,6 @@ export class SearchForm extends React.Component {
                     hintText="Leave time"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="leaveTime"
                 />
                 <TextField
@@ -84,7 +83,6 @@ export class SearchForm extends React.Component {
                     hintText="Start/Return location"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="returnDestination"
                 />
                 <TimePicker
@@ -92,14 +90,13 @@ export class SearchForm extends React.Component {
                     hintText="Return time"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="returnTime"
                 />
                 <RaisedButton
                     id="form-submit"
                     type="submit"
                     label="Submit"
-                    backgroundColor="#558B2F"
+                    primary={true}
                 />
             </form>
         )
