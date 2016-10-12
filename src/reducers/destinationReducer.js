@@ -1,40 +1,29 @@
-import * as destinationActions from '../actions/destination'
+import * as destination from '../actions/destination'
 import initialState from './initialState'
 
 function destinationReducer(state = initialState, action) {
     switch (action.type) {
-        case destinationActions.FETCH_WEATHER_SUCCESS:
-            return Object.assign({}, state, {
-                destinationTemp: action.destinationTemp,
-                destinationWind: action.destinationWind,
-                destinationPrecip: action.destinationPrecip,
-                destinationSnow: action.destinationSnow,
-                destinationWeatherIcon: action.destinationWeatherIcon
-            })
-        case destinationActions.FETCH_WEATHER_ERROR:
-            return Object.assign({}, state, {
-                destinationTemp: 'N/A',
-                destinationWind: 'N/A',
-                destinationPrecip: 'N/A',
-                destinationSnow: 'N/A',
-                destinationWeatherIcon: 'N/A'
-            })
-        case destinationActions.SET_DESTINATION:
+        case destination.SET_DESTINATION:
             console.log('hit set destination reducer')
-            console.log(action.regionDestination, 'action region')
-            console.log(action.cityDestination, 'action city')
+            console.log(action.regionDestination, 'action dest region')
+            console.log(action.cityDestination, 'action dest city')
+            console.log(action.latLngDestination, 'action dest latLNG')
             return Object.assign({}, state, {
                 regionDestination: action.regionDestination,
                 cityDestination: action.cityDestination,
                 latLngDestination: action.latLngDestination
             })
-        case destinationActions.SET_RETURN_DESTINATION:
+        case destination.SET_RETURN_DESTINATION:
+            console.log('hit set return destination reducer')
+            console.log(action.regionReturnDestination, 'action return region')
+            console.log(action.cityReturnDestination, 'action return city')
+            console.log(action.latLngReturnDestination, 'action return latLNG')
             return Object.assign({}, state, {
                 cityReturnDestination: action.cityReturnDestination,
                 regionReturnDestination: action.regionReturnDestination,
                 latLngReturnDestination: action.latLngReturnDestination
             })
-        case destinationActions.HAVE_LOCATIONS:
+        case destination.HAVE_LOCATIONS:
             return Object.assign({}, state, {
                 haveLocations: action.haveLocations
             })

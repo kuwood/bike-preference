@@ -27,11 +27,18 @@ let mapStateToProps = (state, props) => {
     return {
         cityDestination: state.destinationReducer.cityDestination,
         regionDestination: state.destinationReducer.regionDestination,
-        destinationTemp: state.destinationReducer.destinationTemp,
-        destinationWind: state.destinationReducer.destinationWind,
-        destinationPrecip: state.destinationReducer.destinationPrecip,
-        destinationSnow: state.destinationReducer.destinationSnow,
-        destinationWeatherIcon: state.destinationReducer.destinationWeatherIcon
+        destinationTemp: state.weatherReducer.destinationTemp,
+        destinationWind: state.weatherReducer.destinationWind,
+        destinationPrecip: state.weatherReducer.destinationPrecip,
+        destinationSnow: state.weatherReducer.destinationSnow,
+        destinationWeatherIcon: state.weatherReducer.destinationWeatherIcon,
+        cityReturnDestination: state.destinationReducer.cityReturnDestination,
+        regionReturnDestination: state.destinationReducer.regionReturnDestination,
+        returnTemp: state.weatherReducer.returnTemp,
+        returnWind: state.weatherReducer.returnWind,
+        returnPrecip: state.weatherReducer.returnPrecip,
+        returnSnow: state.weatherReducer.returnSnow,
+        returnWeatherIcon: state.weatherReducer.returnWeatherIcon
     }
 }
 

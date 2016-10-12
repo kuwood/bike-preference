@@ -5,7 +5,8 @@ import TextField from 'material-ui/TextField'
 import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import * as destinationActions from '../actions/destination'
+import * as destination from '../actions/destination'
+import * as weather from '../actions/weather'
 
 export class SearchForm extends React.Component {
     constructor() {
@@ -34,12 +35,13 @@ export class SearchForm extends React.Component {
             })
             this.props.dispatch(action(city, region, latLng))
         }
+
         google.maps.event.addListener(destinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(destinationAutoComplete, destinationActions.setDestination)
+            fillInPlaces(destinationAutoComplete, destination.setDestination)
         })
 
         google.maps.event.addListener(returnDestinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(returnDestinationAutoComplete, destinationActions.setReturnDestination)
+            fillInPlaces(returnDestinationAutoComplete, destination.setReturnDestination)
         })
     }
 
@@ -51,8 +53,15 @@ export class SearchForm extends React.Component {
             region: this.props.regionDestination,
             city: this.props.cityDestination
         }
-        this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
-        this.props.dispatch(destinationActions.haveLocations())
+        let weatherReturnDestination = {
+            region: this.props.regionReturnDestination,
+            city: this.props.cityReturnDestination
+        }
+        console.log(weatherDestination);
+        console.log(weatherReturnDestination);
+        this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
+        this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
+        this.props.dispatch(destination.haveLocations())
         if (this.props.haveLocations) document.getElementById('dest-weather').scrollIntoView();
     }
 

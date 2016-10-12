@@ -7,12 +7,12 @@ export class Directions extends React.Component {
         this.refs.panel.innerHTML = ""
         this.calcRoute(
             new google.maps.LatLng(
-                this.props.latLngReturnDestination.lat,
-                this.props.latLngReturnDestination.lng
+                this.props.beginning.lat,
+                this.props.beginning.lng
             ),
             new google.maps.LatLng(
-                this.props.latLngDestination.lat,
-                this.props.latLngDestination.lng
+                this.props.end.lat,
+                this.props.end.lng
             )
 
         )
@@ -21,16 +21,15 @@ export class Directions extends React.Component {
     componentDidMount() {
         this.calcRoute(
             new google.maps.LatLng(
-                this.props.latLngReturnDestination.lat,
-                this.props.latLngReturnDestination.lng
+                this.props.beginning.lat,
+                this.props.beginning.lng
             ),
             new google.maps.LatLng(
-                this.props.latLngDestination.lat,
-                this.props.latLngDestination.lng
+                this.props.end.lat,
+                this.props.end.lng
             )
 
         )
-        document.getElementById('dest-weather').scrollIntoView();
     }
 
     calcRoute(start, end) {
@@ -48,7 +47,7 @@ export class Directions extends React.Component {
                 directionsDisplay.setPanel(this.refs.panel)
                 directionsDisplay.setMap(map)
             }
-        });
+        })
     }
 
     render() {
@@ -63,12 +62,4 @@ export class Directions extends React.Component {
     }
 }
 
-let mapStateToProps = (state, props) => {
-    return {
-        latLngDestination: state.destinationReducer.latLngDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination
-    }
-
-}
-
-export default connect (mapStateToProps)(Directions)
+export default connect ()(Directions)

@@ -29,14 +29,18 @@ export class Main extends React.Component {
                         showMenuIconButton={false}
                     />
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
-                    {this.props.haveLocations ?
-                        <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />}/>
-                        : false
-                    }
-                    {this.props.haveLocations ?
-                        <Paper className='card directions-card' zDepth={1} children={<Directions />}/>
-                        : false
-                    }
+                    {(this.props.haveLocations === true) ? (
+                    <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />} />
+                    ) : false}
+                    {(this.props.haveLocations === true) ? (
+                    <Paper className='card directions-card' id='destination' zDepth={1} children={<Directions beginning={this.props.latLngReturnDestination} end={this.props.latLngDestination} />} />
+                    ) : false}
+                    {(this.props.haveLocations === true) ? (
+                    <Paper className='card weather-card' id='return-weather' zDepth={1} children={<Weather />} />
+                    ) : false}
+                    {(this.props.haveLocations === true) ? (
+                    <Paper className='card directions-card' zDepth={1} children={<Directions beginning={this.props.latLngDestination} end={this.props.latLngReturnDestination} />} />
+                    ) : false}
                 </div>
             </MuiThemeProvider>
         )
@@ -45,6 +49,8 @@ export class Main extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
+        latLngDestination: state.destinationReducer.latLngDestination,
+        latLngReturnDestination: state.destinationReducer.latLngReturnDestination,
         haveLocations: state.destinationReducer.haveLocations
     }
 }
