@@ -3,20 +3,7 @@ import { connect } from 'react-redux'
 
 export class Directions extends React.Component {
 
-    componentDidUpdate() {
-        this.refs.panel.innerHTML = ""
-        this.calcRoute(
-            new google.maps.LatLng(
-                this.props.beginning.lat,
-                this.props.beginning.lng
-            ),
-            new google.maps.LatLng(
-                this.props.end.lat,
-                this.props.end.lng
-            )
 
-        )
-    }
 
     componentDidMount() {
         this.calcRoute(
@@ -62,4 +49,4 @@ export class Directions extends React.Component {
     }
 }
 
-export default connect ()(Directions)
+export default Directions

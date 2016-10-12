@@ -28,18 +28,31 @@ export class Main extends React.Component {
                     <AppBar title="Fair Weather Cyclist"
                         showMenuIconButton={false}
                     />
+
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
                     {(this.props.haveLocations === true) ? (
-                    <Paper className='card weather-card' id='dest-weather' zDepth={1} children={<Weather />} />
+                        <Paper className='card weather-card' id='dest-weather' zDepth={1}
+                               children={<Weather weather={this.props.destinationWeather}
+                                                  location={this.props.destination} />} />
+
                     ) : false}
+
                     {(this.props.haveLocations === true) ? (
-                    <Paper className='card directions-card' id='destination' zDepth={1} children={<Directions beginning={this.props.latLngReturnDestination} end={this.props.latLngDestination} />} />
+                        <Paper className='card directions-card' id='destination' zDepth={1}
+                               children={<Directions beginning={this.props.returnLocation.latLng}
+                                                     end={this.props.destination.latLng} />} />
                     ) : false}
+
                     {(this.props.haveLocations === true) ? (
-                    <Paper className='card weather-card' id='return-weather' zDepth={1} children={<Weather />} />
+                        <Paper className='card weather-card' id='return-weather' zDepth={1}
+                               children={<Weather weather={this.props.returnWeather}
+                               location={this.props.returnLocation} />} />
                     ) : false}
+
                     {(this.props.haveLocations === true) ? (
-                    <Paper className='card directions-card' zDepth={1} children={<Directions beginning={this.props.latLngDestination} end={this.props.latLngReturnDestination} />} />
+                        <Paper className='card directions-card' zDepth={1}
+                               children={<Directions beginning={this.props.destination.latLng}
+                               end={this.props.returnLocation.latLng} />} />
                     ) : false}
                 </div>
             </MuiThemeProvider>
@@ -49,9 +62,11 @@ export class Main extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
-        latLngDestination: state.destinationReducer.latLngDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination,
-        haveLocations: state.destinationReducer.haveLocations
+        destinationWeather: state.weatherReducer.destinationWeather,
+        returnWeather: state.weatherReducer.returnWeather,
+        haveLocations: state.destinationReducer.haveLocations,
+        destination: state.destinationReducer.destination,
+        returnLocation: state.destinationReducer.returnLocation
     }
 }
 

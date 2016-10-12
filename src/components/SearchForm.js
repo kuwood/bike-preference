@@ -50,19 +50,19 @@ export class SearchForm extends React.Component {
         let leaveTime = this.refs.leaveTime.refs.input.input.value
         let returnTime = this.refs.returnTime.refs.input.input.value
         let weatherDestination = {
-            region: this.props.regionDestination,
-            city: this.props.cityDestination
+            region: this.props.destination.region,
+            city: this.props.destination.city
         }
         let weatherReturnDestination = {
-            region: this.props.regionReturnDestination,
-            city: this.props.cityReturnDestination
+            region: this.props.returnLocation.region,
+            city: this.props.returnLocation.city
         }
-        console.log(weatherDestination);
-        console.log(weatherReturnDestination);
+        console.log(weatherDestination)
+        console.log(weatherReturnDestination)
         this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
         this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
         this.props.dispatch(destination.haveLocations())
-        if (this.props.haveLocations) document.getElementById('dest-weather').scrollIntoView();
+        
     }
 
     render() {
@@ -114,12 +114,8 @@ export class SearchForm extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
-        regionDestination: state.destinationReducer.regionDestination,
-        cityDestination: state.destinationReducer.cityDestination,
-        latLngDestination: state.destinationReducer.latLngDestination,
-        cityReturnDestination: state.destinationReducer.cityReturnDestination,
-        regionReturnDestination: state.destinationReducer.regionReturnDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination,
+        destination: state.destinationReducer.destination,
+        returnLocation: state.destinationReducer.returnLocation,
         haveLocations: state.destinationReducer.haveLocations
     }
 }

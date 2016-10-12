@@ -63,7 +63,7 @@ export const fetchReturnWeatherError = (returnWeather, error) => {
     }
 }
 
-export let fetchWeather = (location, time, direction) => {
+export let fetchWeather = (location, time, assignment) => {
     return dispatch => {
         let timeFormatted = ConvertTimeFormat(time)
         let url = `http://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/${location.region}/${location.city}.json`
@@ -88,9 +88,15 @@ export let fetchWeather = (location, time, direction) => {
                 }
             }
             console.log('returning', weather)
-            let call = (direction === 'destination') ? dispatch(fetchDestinationWeatherSuccess(weather)) :
-                                                       dispatch(fetchReturnWeatherSuccess(weather))
-            return call
+            
+            let fetchDirection
+            if (assignment === 'destination') {
+                fetchDirection = dispatch(fetchDestinationWeatherSuccess(weather))
+            } else {
+                fetchDirection = dispatch(fetchReturnWeatherSuccess(weather))
+            }
+
+            return fetchDirection
         })
         .catch(error => {
             return dispatch(console.log(error))
