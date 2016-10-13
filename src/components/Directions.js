@@ -2,7 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 export class Directions extends React.Component {
-
+    constructor(props){
+        super(props)
+        this.directionsService = null
+        this.directionsDisplay = null
+    }
     componentDidMount() {
 
         this.calcRoute(
@@ -34,19 +38,24 @@ export class Directions extends React.Component {
     }
 
     calcRoute(start, end) {
-        let directionsService = new google.maps.DirectionsService()
-        let directionsDisplay = new google.maps.DirectionsRenderer()
+        if (this.directionsDisplay) {
+            this.directionsDisplay.setMap(null)
+            this.directionsDisplay.setPanel(null)
+            this.directionsDisplay = null
+        }
+        this.directionsService = new google.maps.DirectionsService()
+        this.directionsDisplay = new google.maps.DirectionsRenderer()
         let request = {
             origin:start,
             destination:end,
             travelMode: 'BICYCLING'
         }
-        directionsService.route(request, (response, status) => {
+        this.directionsService.route(request, (response, status) => {
             if (status == 'OK') {
-                directionsDisplay.setDirections(response);
+                this.directionsDisplay.setDirections(response);
                 let map = new google.maps.Map(this.refs.map);
-                directionsDisplay.setPanel(this.refs.panel)
-                directionsDisplay.setMap(map)
+                this.directionsDisplay.setPanel(this.refs.panel)
+                this.directionsDisplay.setMap(map)
             }
         })
     }
