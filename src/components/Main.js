@@ -28,32 +28,29 @@ export class Main extends React.Component {
                     <AppBar title="Fair Weather Cyclist"
                         showMenuIconButton={false}
                     />
-
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
-                    {(this.props.haveLocations === true) ? (
-                        <Paper className='card weather-card' id='dest-weather' zDepth={1}
-                               children={<Weather weather={this.props.destinationWeather}
-                                                  location={this.props.destination} />} />
 
-                    ) : false}
+                    {(this.props.haveLocations) ? (
+                    <Paper className='card weather-card' id='dest-weather' zDepth={1}
+                           children={<Weather weather={this.props.destinationWeather}
+                                              location={this.props.destination} />} />
+                                          ) : null}
+                                          {(this.props.haveLocations) ? (
+                    <Paper className='card directions-card' id='destination' zDepth={1}
+                           children={<Directions beginning={this.props.returnLocation.latLng}
+                                                 end={this.props.destination.latLng} />} />
+                                             ) : null}
+                                             {(this.props.haveLocations) ? (
+                    <Paper className='card weather-card' id='return-weather' zDepth={1}
+                           children={<Weather weather={this.props.returnWeather}
+                                              location={this.props.returnLocation} />} />
+                                          ) : null}
+                                          {(this.props.haveLocations) ? (
+                    <Paper className='card directions-card' zDepth={1}
+                           children={<Directions beginning={this.props.destination.latLng}
+                                                 end={this.props.returnLocation.latLng} />} />
 
-                    {(this.props.haveLocations === true) ? (
-                        <Paper className='card directions-card' id='destination' zDepth={1}
-                               children={<Directions beginning={this.props.returnLocation.latLng}
-                                                     end={this.props.destination.latLng} />} />
-                    ) : false}
-
-                    {(this.props.haveLocations === true) ? (
-                        <Paper className='card weather-card' id='return-weather' zDepth={1}
-                               children={<Weather weather={this.props.returnWeather}
-                               location={this.props.returnLocation} />} />
-                    ) : false}
-
-                    {(this.props.haveLocations === true) ? (
-                        <Paper className='card directions-card' zDepth={1}
-                               children={<Directions beginning={this.props.destination.latLng}
-                               end={this.props.returnLocation.latLng} />} />
-                    ) : false}
+                                         ) : null}
                 </div>
             </MuiThemeProvider>
         )

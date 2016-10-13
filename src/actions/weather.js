@@ -87,8 +87,7 @@ export let fetchWeather = (location, time, assignment) => {
                     break
                 }
             }
-            console.log('returning', weather)
-            
+
             let fetchDirection
             if (assignment === 'destination') {
                 fetchDirection = dispatch(fetchDestinationWeatherSuccess(weather))

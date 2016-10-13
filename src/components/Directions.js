@@ -3,9 +3,8 @@ import { connect } from 'react-redux'
 
 export class Directions extends React.Component {
 
-
-
     componentDidMount() {
+
         this.calcRoute(
             new google.maps.LatLng(
                 this.props.beginning.lat,
@@ -17,6 +16,21 @@ export class Directions extends React.Component {
             )
 
         )
+    }
+
+    componentDidUpdate() {
+        this.refs.panel.innerHTML = ""
+        this.calcRoute(
+            new google.maps.LatLng(
+                this.props.beginning.lat,
+                this.props.beginning.lng
+            ),
+            new google.maps.LatLng(
+                this.props.end.lat,
+                this.props.end.lng
+            )
+        )
+        document.getElementById('dest-weather').scrollIntoView()
     }
 
     calcRoute(start, end) {

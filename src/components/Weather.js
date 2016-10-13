@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 export class Weather extends React.Component {
 
     render() {
-        {console.log('rendering', this.props.location, this.props.weather)}
         return (
             <div className='weather-container'>
                 <h3 className='weather-location'>{this.props.location.city}, {this.props.location.region}</h3>

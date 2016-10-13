@@ -37,11 +37,11 @@ export class SearchForm extends React.Component {
         }
 
         google.maps.event.addListener(destinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(destinationAutoComplete, destination.setDestination)
+            fillInPlaces(destinationAutoComplete, destination.findDestination)
         })
 
         google.maps.event.addListener(returnDestinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(returnDestinationAutoComplete, destination.setReturnDestination)
+            fillInPlaces(returnDestinationAutoComplete, destination.findReturnDestination)
         })
     }
 
@@ -50,19 +50,21 @@ export class SearchForm extends React.Component {
         let leaveTime = this.refs.leaveTime.refs.input.input.value
         let returnTime = this.refs.returnTime.refs.input.input.value
         let weatherDestination = {
-            region: this.props.destination.region,
-            city: this.props.destination.city
+            region: this.props.findDestination.region,
+            city: this.props.findDestination.city
         }
         let weatherReturnDestination = {
-            region: this.props.returnLocation.region,
-            city: this.props.returnLocation.city
+            region: this.props.findReturnDestination.region,
+            city: this.props.findReturnDestination.city
         }
-        console.log(weatherDestination)
-        console.log(weatherReturnDestination)
+        this.props.dispatch(destination.dontHaveLocations())
         this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
         this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
         this.props.dispatch(destination.haveLocations())
-        
+        console.log(this.props.findDestination)
+        this.props.dispatch(destination.setDestination(this.props.findDestination))
+        this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
+
     }
 
     render() {
@@ -116,6 +118,8 @@ let mapStateToProps = (state, props) => {
     return {
         destination: state.destinationReducer.destination,
         returnLocation: state.destinationReducer.returnLocation,
+        findDestination: state.destinationReducer.findDestination,
+        findReturnDestination: state.destinationReducer.findReturnLocation,
         haveLocations: state.destinationReducer.haveLocations
     }
 }

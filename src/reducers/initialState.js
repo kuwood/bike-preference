@@ -1,4 +1,20 @@
 const initialState = {
+    findDestination: {
+        city: null,
+        latLng: {
+            lat: null,
+            lng: null
+        },
+        region: null
+    },
+    findReturnLocation: {
+        city: null,
+        latLng: {
+            lat: null,
+            lng: null
+        },
+        region: null
+    },
     destination: {
         city: null,
         latLng: {
