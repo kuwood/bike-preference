@@ -5,7 +5,8 @@ import TextField from 'material-ui/TextField'
 import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import * as destinationActions from '../actions/destination'
+import * as destination from '../actions/destination'
+import * as weather from '../actions/weather'
 
 export class SearchForm extends React.Component {
     constructor() {
@@ -34,12 +35,13 @@ export class SearchForm extends React.Component {
             })
             this.props.dispatch(action(city, region, latLng))
         }
+
         google.maps.event.addListener(destinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(destinationAutoComplete, destinationActions.setDestination)
+            fillInPlaces(destinationAutoComplete, destination.findDestination)
         })
 
         google.maps.event.addListener(returnDestinationAutoComplete, 'place_changed', () => {
-            fillInPlaces(returnDestinationAutoComplete, destinationActions.setReturnDestination)
+            fillInPlaces(returnDestinationAutoComplete, destination.findReturnDestination)
         })
     }
 
@@ -48,12 +50,21 @@ export class SearchForm extends React.Component {
         let leaveTime = this.refs.leaveTime.refs.input.input.value
         let returnTime = this.refs.returnTime.refs.input.input.value
         let weatherDestination = {
-            region: this.props.regionDestination,
-            city: this.props.cityDestination
+            region: this.props.findDestination.region,
+            city: this.props.findDestination.city
         }
-        this.props.dispatch(destinationActions.fetchWeather(weatherDestination, leaveTime))
-        this.props.dispatch(destinationActions.haveLocations())
-        if (this.props.haveLocations) document.getElementById('dest-weather').scrollIntoView();
+        let weatherReturnDestination = {
+            region: this.props.findReturnDestination.region,
+            city: this.props.findReturnDestination.city
+        }
+        this.props.dispatch(destination.dontHaveLocations())
+        this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
+        this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
+        this.props.dispatch(destination.haveLocations())
+        console.log(this.props.findDestination)
+        this.props.dispatch(destination.setDestination(this.props.findDestination))
+        this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
+
     }
 
     render() {
@@ -67,7 +78,7 @@ export class SearchForm extends React.Component {
                     hintText="Enter your destination"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
+
                     ref="destination"
                 />
                 <TimePicker
@@ -75,7 +86,6 @@ export class SearchForm extends React.Component {
                     hintText="Leave time"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="leaveTime"
                 />
                 <TextField
@@ -84,7 +94,6 @@ export class SearchForm extends React.Component {
                     hintText="Start/Return location"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="returnDestination"
                 />
                 <TimePicker
@@ -92,14 +101,13 @@ export class SearchForm extends React.Component {
                     hintText="Return time"
                     inputStyle={{color: '#fff'}}
                     hintStyle={{color: '#F1F8E9'}}
-                    underlineFocusStyle={{borderColor: '#558B2F'}}
                     ref="returnTime"
                 />
                 <RaisedButton
                     id="form-submit"
                     type="submit"
                     label="Submit"
-                    backgroundColor="#558B2F"
+                    primary={true}
                 />
             </form>
         )
@@ -108,12 +116,10 @@ export class SearchForm extends React.Component {
 
 let mapStateToProps = (state, props) => {
     return {
-        regionDestination: state.destinationReducer.regionDestination,
-        cityDestination: state.destinationReducer.cityDestination,
-        latLngDestination: state.destinationReducer.latLngDestination,
-        cityReturnDestination: state.destinationReducer.cityReturnDestination,
-        regionReturnDestination: state.destinationReducer.regionReturnDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination,
+        destination: state.destinationReducer.destination,
+        returnLocation: state.destinationReducer.returnLocation,
+        findDestination: state.destinationReducer.findDestination,
+        findReturnDestination: state.destinationReducer.findReturnLocation,
         haveLocations: state.destinationReducer.haveLocations
     }
 }

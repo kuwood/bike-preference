@@ -2,53 +2,62 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 export class Directions extends React.Component {
+    constructor(props){
+        super(props)
+        this.directionsService = null
+        this.directionsDisplay = null
+    }
+    componentDidMount() {
+
+        this.calcRoute(
+            new google.maps.LatLng(
+                this.props.beginning.lat,
+                this.props.beginning.lng
+            ),
+            new google.maps.LatLng(
+                this.props.end.lat,
+                this.props.end.lng
+            )
+
+        )
+    }
 
     componentDidUpdate() {
         this.refs.panel.innerHTML = ""
         this.calcRoute(
             new google.maps.LatLng(
-                this.props.latLngReturnDestination.lat,
-                this.props.latLngReturnDestination.lng
+                this.props.beginning.lat,
+                this.props.beginning.lng
             ),
             new google.maps.LatLng(
-                this.props.latLngDestination.lat,
-                this.props.latLngDestination.lng
+                this.props.end.lat,
+                this.props.end.lng
             )
-
         )
-    }
-
-    componentDidMount() {
-        this.calcRoute(
-            new google.maps.LatLng(
-                this.props.latLngReturnDestination.lat,
-                this.props.latLngReturnDestination.lng
-            ),
-            new google.maps.LatLng(
-                this.props.latLngDestination.lat,
-                this.props.latLngDestination.lng
-            )
-
-        )
-        document.getElementById('dest-weather').scrollIntoView();
+        document.getElementById('dest-weather').scrollIntoView()
     }
 
     calcRoute(start, end) {
-        let directionsService = new google.maps.DirectionsService()
-        let directionsDisplay = new google.maps.DirectionsRenderer()
+        if (this.directionsDisplay) {
+            this.directionsDisplay.setMap(null)
+            this.directionsDisplay.setPanel(null)
+            this.directionsDisplay = null
+        }
+        this.directionsService = new google.maps.DirectionsService()
+        this.directionsDisplay = new google.maps.DirectionsRenderer()
         let request = {
             origin:start,
             destination:end,
             travelMode: 'BICYCLING'
         }
-        directionsService.route(request, (response, status) => {
+        this.directionsService.route(request, (response, status) => {
             if (status == 'OK') {
-                directionsDisplay.setDirections(response);
+                this.directionsDisplay.setDirections(response);
                 let map = new google.maps.Map(this.refs.map);
-                directionsDisplay.setPanel(this.refs.panel)
-                directionsDisplay.setMap(map)
+                this.directionsDisplay.setPanel(this.refs.panel)
+                this.directionsDisplay.setMap(map)
             }
-        });
+        })
     }
 
     render() {
@@ -63,12 +72,4 @@ export class Directions extends React.Component {
     }
 }
 
-let mapStateToProps = (state, props) => {
-    return {
-        latLngDestination: state.destinationReducer.latLngDestination,
-        latLngReturnDestination: state.destinationReducer.latLngReturnDestination
-    }
-
-}
-
-export default connect (mapStateToProps)(Directions)
+export default Directions

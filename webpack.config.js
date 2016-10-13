@@ -10,6 +10,11 @@ var filename = [packageData.name, packageData.version, 'js'];
 var plugins = [];
 
 if (minify) {
+    plugins.push(new webpack.DefinePlugin({
+        'process.env':{
+            'NODE_ENV': JSON.stringify('production')
+        }
+    }));
     filename.splice(filename.length - 1, 0, 'min');
     plugins.push(new webpack.optimize.UglifyJsPlugin({
         compress: {
@@ -17,6 +22,8 @@ if (minify) {
         }
     }));
 }
+
+
 
 module.exports = {
     entry: path.resolve(__dirname, packageData.main),

@@ -67,14 +67,21 @@ describe('SearchForm component', () => {
 
 describe('Weather component', () => {
     it('should contain the weather data', () => {
+        let weather = {
+            precip: '0',
+            snow: '0',
+            temp: '70',
+            weatherIcon: 'sampleimage.com',
+            wind: '5'
+        }
+        let destination = {
+            city: 'Oakland',
+            region: 'CA'
+        }
+
         const renderer = TestUtils.createRenderer()
-        renderer.render(<Weather cityDestination='Oakland'
-                                 regionDestination='CA'
-                                 destinationTemp='70'
-                                 destinationWind='5'
-                                 destinationPrecip='0'
-                                 destinationSnow='0'
-                                 destinationWeatherIcon='sampleimage.com'
+        renderer.render(<Weather weather={weather}
+                                 location={destination}
                         />)
 
         const result = renderer.getRenderOutput()

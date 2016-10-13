@@ -1,95 +1,41 @@
-import fetch from 'isomorphic-fetch'
-import moment from 'moment'
-
-function ConvertTimeFormat(str) {
-    let myDate = moment(str, ["h:mm:A"]).format('h:mm A')
-    return myDate
-}
-
-function clearMinutes(str) {
-    let colonIndex = str.indexOf(':')
-    let middle = '00'
-    let beginning = str.slice(0, colonIndex + 1)
-    let end = str.slice(colonIndex + 3)
-    let newTime = beginning.concat(middle, end)
-    return newTime
-}
-
-export const FETCH_WEATHER_SUCCESS = 'FETCH_WEATHER_SUCCESS'
-export const fetchWeatherSuccess = (destinationWeather) => {
+export const FIND_DESTINATION = 'FIND_DESTINATION'
+export const findDestination = (city, region, latLng) => {
     return {
-        type: FETCH_WEATHER_SUCCESS,
-        destinationTemp: destinationWeather.temp.english,
-        destinationWind: destinationWeather.wspd.english,
-        destinationPrecip: destinationWeather.qpf.english,
-        destinationSnow: destinationWeather.snow.english,
-        destinationWeatherIcon: destinationWeather.icon_url
-    }
-}
-
-export const FETCH_WEATHER_ERROR = 'FETCH_WEATHER_ERROR'
-export const fetchWeatherError = (destinationWeather, error) => {
-    return {
-        type: FETCH_WEATHER_ERROR,
-        destinationTemp: 'N/A',
-        destinationWind: 'N/A',
-        destinationPrecip: 'N/A',
-        destinationSnow: 'N/A',
-        error: error
-    }
-}
-
-export let fetchWeather = (destination, time) => {
-    return dispatch => {
-        let timeFormatted = ConvertTimeFormat(time)
-        let url = `http://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/${destination.region}/${destination.city}.json`
-        return fetch(url).then(response => {
-            if (response.status < 200 || response.status >= 300) {
-                let error = new Error(response.statusText)
-                error.response = response
-                throw error
-            }
-            return response
-        })
-        .then(response => {
-            return response.json()
-        })
-        .then(data => {
-            let destinationWeather
-            let topOfHour = clearMinutes(timeFormatted)
-            for (let hourForecast of data.hourly_forecast) {
-                if (hourForecast.FCTTIME.civil === topOfHour) {
-                    destinationWeather = hourForecast
-                    break
-                }
-            }
-
-            return dispatch(fetchWeatherSuccess(destinationWeather))
-        })
-        .catch(error => {
-            return dispatch(console.log(error))
-        })
-    }
-}
-
-export const SET_DESTINATION = 'SET_DESTINATION'
-export const setDestination = (city, region, latLng) => {
-    console.log("hit setRoute action");
-    return {
-        type: 'SET_DESTINATION',
+        type: 'FIND_DESTINATION',
         cityDestination: city,
         regionDestination: region,
         latLngDestination: latLng
     }
 }
 
-export const SET_RETURN_DESTINATION = 'SET_RETURN_DESTINATION'
-export const setReturnDestination = (city, region, latLng) => {
+export const FIND_RETURN_DESTINATION = 'FIND_RETURN_DESTINATION'
+export const findReturnDestination = (city, region, latLng) => {
     return {
-        type: 'SET_RETURN_DESTINATION',
+        type: 'FIND_RETURN_DESTINATION',
         cityReturnDestination: city,
         regionReturnDestination: region,
         latLngReturnDestination: latLng
+    }
+}
+
+export const SET_DESTINATION = 'SET_DESTINATION'
+export const setDestination = (findDestination) => {
+    console.log(findDestination);
+    return {
+        type: 'SET_DESTINATION',
+        cityDestination: findDestination.city,
+        regionDestination: findDestination.region,
+        latLngDestination: findDestination.latLng
+    }
+}
+
+export const SET_RETURN_DESTINATION = 'SET_RETURN_DESTINATION'
+export const setReturnDestination = (findReturnDestination) => {
+    return {
+        type: 'SET_RETURN_DESTINATION',
+        cityReturnDestination: findReturnDestination.city,
+        regionReturnDestination: findReturnDestination.region,
+        latLngReturnDestination: findReturnDestination.latLng
     }
 }
 
@@ -98,5 +44,13 @@ export const haveLocations = () => {
     return {
         type: 'HAVE_LOCATIONS',
         haveLocations: true
+    }
+}
+
+export const DONT_HAVE_LOCATIONS = 'DONT_HAVE_LOCATIONS'
+export const dontHaveLocations = () => {
+    return {
+        type: 'DONT_HAVE_LOCATIONS',
+        haveLocations: false
     }
 }
