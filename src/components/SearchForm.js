@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
+require('smoothscroll-polyfill').polyfill()
 
 
 import TextField from 'material-ui/TextField'
 import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
-import Divider from 'material-ui/Divider'
 
 import * as destination from '../actions/destination'
 import * as weather from '../actions/weather'
@@ -14,9 +14,24 @@ export class SearchForm extends React.Component {
     constructor() {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.state = {
+          leaveTime: "",
+          returnTime: "",
+          dest: "",
+          returnDest: ""
+        }
     }
 
     componentDidMount() {
+        window.addEventListener('keydown', function(e) {
+          if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+            if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+              e.preventDefault()
+              return false
+            }
+          }
+        }, true)
+
         let destinationInput = document.getElementById('destination-input')
         let returnDestinationInput = document.getElementById('return-destination')
         let destinationAutoComplete = new google.maps.places.Autocomplete(destinationInput)
@@ -51,21 +66,39 @@ export class SearchForm extends React.Component {
         e.preventDefault()
         let leaveTime = this.refs.leaveTime.refs.input.input.value
         let returnTime = this.refs.returnTime.refs.input.input.value
-        let weatherDestination = {
+        let dest = this.refs.destination.input.value
+        let returnDest = this.refs.returnDestination.input.value
+        if (!leaveTime) this.setState({leaveTime: "This field is required"})
+        else this.setState({leaveTime: ""})
+
+        if (!returnTime) this.setState({returnTime: "This field is required"})
+        else this.setState({returnTime: ""})
+
+        if (!dest) this.setState({dest: "This field is required"})
+        else this.setState({dest: ""})
+
+        if (!returnDest) this.setState({returnDest: "This field is required"})
+        else this.setState({returnDest: ""})
+
+        if (leaveTime && returnTime && dest && returnDest){
+          let weatherDestination = {
             region: this.props.findDestination.region,
             city: this.props.findDestination.city
-        }
-        let weatherReturnDestination = {
+          }
+          let weatherReturnDestination = {
             region: this.props.findReturnDestination.region,
             city: this.props.findReturnDestination.city
+          }
+          this.props.dispatch(destination.dontHaveLocations())
+          this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
+          this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
+          this.props.dispatch(destination.haveLocations())
+          this.props.dispatch(destination.setDestination(this.props.findDestination))
+          this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
+          setTimeout(function(){
+            document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' })
+          }, 1000)
         }
-        this.props.dispatch(destination.dontHaveLocations())
-        this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
-        this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
-        this.props.dispatch(destination.haveLocations())
-        console.log(this.props.findDestination)
-        this.props.dispatch(destination.setDestination(this.props.findDestination))
-        this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
     }
 
     render() {
@@ -87,6 +120,7 @@ export class SearchForm extends React.Component {
                           hintStyle={{color: '#F1F8E9'}}
                           ref="returnDestination"
                           fullWidth={true}
+                          errorText={this.state.returnDest}
                       />
                       <TimePicker
                           id="leave-time"
@@ -95,6 +129,7 @@ export class SearchForm extends React.Component {
                           hintStyle={{color: '#F1F8E9'}}
                           ref="leaveTime"
                           fullWidth={true}
+                          errorText={this.state.leaveTime}
                       />
                       <TextField
                           placeholder=""
@@ -105,6 +140,7 @@ export class SearchForm extends React.Component {
                           ref="destination"
                           fullWidth={true}
                           className="top-margin"
+                          errorText={this.state.dest}
                       />
                       <TimePicker
                           id="return-time"
@@ -113,6 +149,7 @@ export class SearchForm extends React.Component {
                           hintStyle={{color: '#F1F8E9'}}
                           ref="returnTime"
                           fullWidth={true}
+                          errorText={this.state.returnTime}
                       />
                       <RaisedButton
                           id="form-submit"

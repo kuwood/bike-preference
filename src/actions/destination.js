@@ -20,7 +20,6 @@ export const findReturnDestination = (city, region, latLng) => {
 
 export const SET_DESTINATION = 'SET_DESTINATION'
 export const setDestination = (findDestination) => {
-    console.log(findDestination);
     return {
         type: 'SET_DESTINATION',
         cityDestination: findDestination.city,
