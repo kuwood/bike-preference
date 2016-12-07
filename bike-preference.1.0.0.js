@@ -23272,7 +23272,6 @@
 	
 	var SET_DESTINATION = exports.SET_DESTINATION = 'SET_DESTINATION';
 	var setDestination = exports.setDestination = function setDestination(findDestination) {
-	    console.log(findDestination);
 	    return {
 	        type: 'SET_DESTINATION',
 	        cityDestination: findDestination.city,
@@ -38792,11 +38791,11 @@
 	
 	var _SearchForm2 = _interopRequireDefault(_SearchForm);
 	
-	var _Weather = __webpack_require__(550);
+	var _Weather = __webpack_require__(551);
 	
 	var _Weather2 = _interopRequireDefault(_Weather);
 	
-	var _Directions = __webpack_require__(551);
+	var _Directions = __webpack_require__(552);
 	
 	var _Directions2 = _interopRequireDefault(_Directions);
 	
@@ -49784,10 +49783,6 @@
 	
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 	
-	var _Divider = __webpack_require__(548);
-	
-	var _Divider2 = _interopRequireDefault(_Divider);
-	
 	var _destination = __webpack_require__(200);
 	
 	var destination = _interopRequireWildcard(_destination);
@@ -49806,6 +49801,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	__webpack_require__(550).polyfill();
+	
 	var SearchForm = exports.SearchForm = function (_React$Component) {
 	    _inherits(SearchForm, _React$Component);
 	
@@ -49815,6 +49812,12 @@
 	        var _this = _possibleConstructorReturn(this, (SearchForm.__proto__ || Object.getPrototypeOf(SearchForm)).call(this));
 	
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.state = {
+	            leaveTime: "",
+	            returnTime: "",
+	            dest: "",
+	            returnDest: ""
+	        };
 	        return _this;
 	    }
 	
@@ -49822,6 +49825,15 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            var _this2 = this;
+	
+	            window.addEventListener('keydown', function (e) {
+	                if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+	                    if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+	                        e.preventDefault();
+	                        return false;
+	                    }
+	                }
+	            }, true);
 	
 	            var destinationInput = document.getElementById('destination-input');
 	            var returnDestinationInput = document.getElementById('return-destination');
@@ -49858,21 +49870,35 @@
 	            e.preventDefault();
 	            var leaveTime = this.refs.leaveTime.refs.input.input.value;
 	            var returnTime = this.refs.returnTime.refs.input.input.value;
-	            var weatherDestination = {
-	                region: this.props.findDestination.region,
-	                city: this.props.findDestination.city
-	            };
-	            var weatherReturnDestination = {
-	                region: this.props.findReturnDestination.region,
-	                city: this.props.findReturnDestination.city
-	            };
-	            this.props.dispatch(destination.dontHaveLocations());
-	            this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'));
-	            this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'));
-	            this.props.dispatch(destination.haveLocations());
-	            console.log(this.props.findDestination);
-	            this.props.dispatch(destination.setDestination(this.props.findDestination));
-	            this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination));
+	            var dest = this.refs.destination.input.value;
+	            var returnDest = this.refs.returnDestination.input.value;
+	            if (!leaveTime) this.setState({ leaveTime: "This field is required" });else this.setState({ leaveTime: "" });
+	
+	            if (!returnTime) this.setState({ returnTime: "This field is required" });else this.setState({ returnTime: "" });
+	
+	            if (!dest) this.setState({ dest: "This field is required" });else this.setState({ dest: "" });
+	
+	            if (!returnDest) this.setState({ returnDest: "This field is required" });else this.setState({ returnDest: "" });
+	
+	            if (leaveTime && returnTime && dest && returnDest) {
+	                var weatherDestination = {
+	                    region: this.props.findDestination.region,
+	                    city: this.props.findDestination.city
+	                };
+	                var weatherReturnDestination = {
+	                    region: this.props.findReturnDestination.region,
+	                    city: this.props.findReturnDestination.city
+	                };
+	                this.props.dispatch(destination.dontHaveLocations());
+	                this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'));
+	                this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'));
+	                this.props.dispatch(destination.haveLocations());
+	                this.props.dispatch(destination.setDestination(this.props.findDestination));
+	                this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination));
+	                setTimeout(function () {
+	                    document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' });
+	                }, 1000);
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -49913,7 +49939,8 @@
 	                            inputStyle: { color: '#fff' },
 	                            hintStyle: { color: '#F1F8E9' },
 	                            ref: 'returnDestination',
-	                            fullWidth: true
+	                            fullWidth: true,
+	                            errorText: this.state.returnDest
 	                        }),
 	                        _react2.default.createElement(_TimePicker2.default, {
 	                            id: 'leave-time',
@@ -49921,7 +49948,8 @@
 	                            inputStyle: { color: '#fff' },
 	                            hintStyle: { color: '#F1F8E9' },
 	                            ref: 'leaveTime',
-	                            fullWidth: true
+	                            fullWidth: true,
+	                            errorText: this.state.leaveTime
 	                        }),
 	                        _react2.default.createElement(_TextField2.default, {
 	                            placeholder: '',
@@ -49931,7 +49959,8 @@
 	                            hintStyle: { color: '#F1F8E9' },
 	                            ref: 'destination',
 	                            fullWidth: true,
-	                            className: 'top-margin'
+	                            className: 'top-margin',
+	                            errorText: this.state.dest
 	                        }),
 	                        _react2.default.createElement(_TimePicker2.default, {
 	                            id: 'return-time',
@@ -49939,7 +49968,8 @@
 	                            inputStyle: { color: '#fff' },
 	                            hintStyle: { color: '#F1F8E9' },
 	                            ref: 'returnTime',
-	                            fullWidth: true
+	                            fullWidth: true,
+	                            errorText: this.state.returnTime
 	                        }),
 	                        _react2.default.createElement(_RaisedButton2.default, {
 	                            id: 'form-submit',
@@ -54994,104 +55024,306 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 548 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-	
-	var _Divider = __webpack_require__(549);
-	
-	var _Divider2 = _interopRequireDefault(_Divider);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = _Divider2.default;
-
-/***/ },
-/* 549 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	var _simpleAssign = __webpack_require__(480);
-	
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-	
-	var propTypes = {
-	  /**
-	   * The css class name of the root element.
-	   */
-	  className: _react.PropTypes.string,
-	  /**
-	   * If true, the `Divider` will be indented `72px`.
-	   */
-	  inset: _react.PropTypes.bool,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object
-	};
-	
-	var defaultProps = {
-	  inset: false
-	};
-	
-	var contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	
-	var Divider = function Divider(props, context) {
-	  var inset = props.inset;
-	  var style = props.style;
-	
-	  var other = _objectWithoutProperties(props, ['inset', 'style']);
-	
-	  var muiTheme = context.muiTheme;
-	  var prepareStyles = muiTheme.prepareStyles;
-	
-	
-	  var styles = {
-	    root: {
-	      margin: 0,
-	      marginTop: -1,
-	      marginLeft: inset ? 72 : 0,
-	      height: 1,
-	      border: 'none',
-	      backgroundColor: muiTheme.baseTheme.palette.borderColor
-	    }
-	  };
-	
-	  return _react2.default.createElement('hr', _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)({}, styles.root, style)) }));
-	};
-	
-	Divider.muiName = 'Divider';
-	Divider.propTypes = propTypes;
-	Divider.defaultProps = defaultProps;
-	Divider.contextTypes = contextTypes;
-	
-	exports.default = Divider;
-
-/***/ },
+/* 548 */,
+/* 549 */,
 /* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 * smoothscroll polyfill - v0.3.4
+	 * https://iamdustan.github.io/smoothscroll
+	 * 2016 (c) Dustan Kasten, Jeremias Menichelli - MIT License
+	 */
+	
+	(function(w, d, undefined) {
+	  'use strict';
+	
+	  /*
+	   * aliases
+	   * w: window global object
+	   * d: document
+	   * undefined: undefined
+	   */
+	
+	  // polyfill
+	  function polyfill() {
+	    // return when scrollBehavior interface is supported
+	    if ('scrollBehavior' in d.documentElement.style) {
+	      return;
+	    }
+	
+	    /*
+	     * globals
+	     */
+	    var Element = w.HTMLElement || w.Element;
+	    var SCROLL_TIME = 468;
+	
+	    /*
+	     * object gathering original scroll methods
+	     */
+	    var original = {
+	      scroll: w.scroll || w.scrollTo,
+	      scrollBy: w.scrollBy,
+	      scrollIntoView: Element.prototype.scrollIntoView
+	    };
+	
+	    /*
+	     * define timing method
+	     */
+	    var now = w.performance && w.performance.now
+	      ? w.performance.now.bind(w.performance) : Date.now;
+	
+	    /**
+	     * changes scroll position inside an element
+	     * @method scrollElement
+	     * @param {Number} x
+	     * @param {Number} y
+	     */
+	    function scrollElement(x, y) {
+	      this.scrollLeft = x;
+	      this.scrollTop = y;
+	    }
+	
+	    /**
+	     * returns result of applying ease math function to a number
+	     * @method ease
+	     * @param {Number} k
+	     * @returns {Number}
+	     */
+	    function ease(k) {
+	      return 0.5 * (1 - Math.cos(Math.PI * k));
+	    }
+	
+	    /**
+	     * indicates if a smooth behavior should be applied
+	     * @method shouldBailOut
+	     * @param {Number|Object} x
+	     * @returns {Boolean}
+	     */
+	    function shouldBailOut(x) {
+	      if (typeof x !== 'object'
+	            || x === null
+	            || x.behavior === undefined
+	            || x.behavior === 'auto'
+	            || x.behavior === 'instant') {
+	        // first arg not an object/null
+	        // or behavior is auto, instant or undefined
+	        return true;
+	      }
+	
+	      if (typeof x === 'object'
+	            && x.behavior === 'smooth') {
+	        // first argument is an object and behavior is smooth
+	        return false;
+	      }
+	
+	      // throw error when behavior is not supported
+	      throw new TypeError('behavior not valid');
+	    }
+	
+	    /**
+	     * finds scrollable parent of an element
+	     * @method findScrollableParent
+	     * @param {Node} el
+	     * @returns {Node} el
+	     */
+	    function findScrollableParent(el) {
+	      var isBody;
+	      var hasScrollableSpace;
+	      var hasVisibleOverflow;
+	
+	      do {
+	        el = el.parentNode;
+	
+	        // set condition variables
+	        isBody = el === d.body;
+	        hasScrollableSpace =
+	          el.clientHeight < el.scrollHeight ||
+	          el.clientWidth < el.scrollWidth;
+	        hasVisibleOverflow =
+	          w.getComputedStyle(el, null).overflow === 'visible';
+	      } while (!isBody && !(hasScrollableSpace && !hasVisibleOverflow));
+	
+	      isBody = hasScrollableSpace = hasVisibleOverflow = null;
+	
+	      return el;
+	    }
+	
+	    /**
+	     * self invoked function that, given a context, steps through scrolling
+	     * @method step
+	     * @param {Object} context
+	     */
+	    function step(context) {
+	      // call method again on next available frame
+	      context.frame = w.requestAnimationFrame(step.bind(w, context));
+	
+	      var time = now();
+	      var value;
+	      var currentX;
+	      var currentY;
+	      var elapsed = (time - context.startTime) / SCROLL_TIME;
+	
+	      // avoid elapsed times higher than one
+	      elapsed = elapsed > 1 ? 1 : elapsed;
+	
+	      // apply easing to elapsed time
+	      value = ease(elapsed);
+	
+	      currentX = context.startX + (context.x - context.startX) * value;
+	      currentY = context.startY + (context.y - context.startY) * value;
+	
+	      context.method.call(context.scrollable, currentX, currentY);
+	
+	      // return when end points have been reached
+	      if (currentX === context.x && currentY === context.y) {
+	        w.cancelAnimationFrame(context.frame);
+	        return;
+	      }
+	    }
+	
+	    /**
+	     * scrolls window with a smooth behavior
+	     * @method smoothScroll
+	     * @param {Object|Node} el
+	     * @param {Number} x
+	     * @param {Number} y
+	     */
+	    function smoothScroll(el, x, y) {
+	      var scrollable;
+	      var startX;
+	      var startY;
+	      var method;
+	      var startTime = now();
+	      var frame;
+	
+	      // define scroll context
+	      if (el === d.body) {
+	        scrollable = w;
+	        startX = w.scrollX || w.pageXOffset;
+	        startY = w.scrollY || w.pageYOffset;
+	        method = original.scroll;
+	      } else {
+	        scrollable = el;
+	        startX = el.scrollLeft;
+	        startY = el.scrollTop;
+	        method = scrollElement;
+	      }
+	
+	      // cancel frame when a scroll event's happening
+	      if (frame) {
+	        w.cancelAnimationFrame(frame);
+	      }
+	
+	      // scroll looping over a frame
+	      step({
+	        scrollable: scrollable,
+	        method: method,
+	        startTime: startTime,
+	        startX: startX,
+	        startY: startY,
+	        x: x,
+	        y: y,
+	        frame: frame
+	      });
+	    }
+	
+	    /*
+	     * ORIGINAL METHODS OVERRIDES
+	     */
+	
+	    // w.scroll and w.scrollTo
+	    w.scroll = w.scrollTo = function() {
+	      // avoid smooth behavior if not required
+	      if (shouldBailOut(arguments[0])) {
+	        original.scroll.call(
+	          w,
+	          arguments[0].left || arguments[0],
+	          arguments[0].top || arguments[1]
+	        );
+	        return;
+	      }
+	
+	      // LET THE SMOOTHNESS BEGIN!
+	      smoothScroll.call(
+	        w,
+	        d.body,
+	        ~~arguments[0].left,
+	        ~~arguments[0].top
+	      );
+	    };
+	
+	    // w.scrollBy
+	    w.scrollBy = function() {
+	      // avoid smooth behavior if not required
+	      if (shouldBailOut(arguments[0])) {
+	        original.scrollBy.call(
+	          w,
+	          arguments[0].left || arguments[0],
+	          arguments[0].top || arguments[1]
+	        );
+	        return;
+	      }
+	
+	      // LET THE SMOOTHNESS BEGIN!
+	      smoothScroll.call(
+	        w,
+	        d.body,
+	        ~~arguments[0].left + (w.scrollX || w.pageXOffset),
+	        ~~arguments[0].top + (w.scrollY || w.pageYOffset)
+	      );
+	    };
+	
+	    // Element.prototype.scrollIntoView
+	    Element.prototype.scrollIntoView = function() {
+	      // avoid smooth behavior if not required
+	      if (shouldBailOut(arguments[0])) {
+	        original.scrollIntoView.call(this, arguments[0] || true);
+	        return;
+	      }
+	
+	      // LET THE SMOOTHNESS BEGIN!
+	      var scrollableParent = findScrollableParent(this);
+	      var parentRects = scrollableParent.getBoundingClientRect();
+	      var clientRects = this.getBoundingClientRect();
+	
+	      if (scrollableParent !== d.body) {
+	        // reveal element inside parent
+	        smoothScroll.call(
+	          this,
+	          scrollableParent,
+	          scrollableParent.scrollLeft + clientRects.left - parentRects.left,
+	          scrollableParent.scrollTop + clientRects.top - parentRects.top
+	        );
+	        // reveal parent in viewport
+	        w.scrollBy({
+	          left: parentRects.left,
+	          top: parentRects.top,
+	          behavior: 'smooth'
+	        });
+	      } else {
+	        // reveal element in viewport
+	        w.scrollBy({
+	          left: clientRects.left,
+	          top: clientRects.top,
+	          behavior: 'smooth'
+	        });
+	      }
+	    };
+	  }
+	
+	  if (true) {
+	    // commonjs
+	    module.exports = { polyfill: polyfill };
+	  } else {
+	    // global
+	    polyfill();
+	  }
+	})(window, document);
+
+
+/***/ },
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55186,7 +55418,7 @@
 	exports.default = Weather;
 
 /***/ },
-/* 551 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
