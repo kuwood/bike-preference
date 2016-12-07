@@ -38792,11 +38792,11 @@
 	
 	var _SearchForm2 = _interopRequireDefault(_SearchForm);
 	
-	var _Weather = __webpack_require__(548);
+	var _Weather = __webpack_require__(550);
 	
 	var _Weather2 = _interopRequireDefault(_Weather);
 	
-	var _Directions = __webpack_require__(549);
+	var _Directions = __webpack_require__(551);
 	
 	var _Directions2 = _interopRequireDefault(_Directions);
 	
@@ -38817,6 +38817,10 @@
 	    }
 	});
 	
+	// <AppBar title="Fair Weather Cyclist"
+	//   showMenuIconButton={false}
+	//   />
+	
 	var Main = exports.Main = function (_React$Component) {
 	    _inherits(Main, _React$Component);
 	
@@ -38835,9 +38839,6 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'wrapper' },
-	                    _react2.default.createElement(_AppBar2.default, { title: 'Fair Weather Cyclist',
-	                        showMenuIconButton: false
-	                    }),
 	                    _react2.default.createElement(_Paper2.default, { className: 'card search-card', zDepth: 2, children: _react2.default.createElement(_SearchForm2.default, null) }),
 	                    this.props.haveLocations ? _react2.default.createElement(_Paper2.default, { className: 'card weather-card', id: 'dest-weather', zDepth: 1,
 	                        children: _react2.default.createElement(_Weather2.default, { weather: this.props.destinationWeather,
@@ -49783,6 +49784,10 @@
 	
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 	
+	var _Divider = __webpack_require__(548);
+	
+	var _Divider2 = _interopRequireDefault(_Divider);
+	
 	var _destination = __webpack_require__(200);
 	
 	var destination = _interopRequireWildcard(_destination);
@@ -49874,50 +49879,78 @@
 	        value: function render() {
 	
 	            return _react2.default.createElement(
-	                'form',
-	                { className: 'search-form', onSubmit: this.handleSubmit },
+	                'div',
+	                { className: 'content' },
 	                _react2.default.createElement(
-	                    'h3',
-	                    { className: 'form-title' },
-	                    'Plan your route'
+	                    'div',
+	                    { className: 'logo' },
+	                    _react2.default.createElement(
+	                        'i',
+	                        { className: 'material-icons logo-icon' },
+	                        'directions_bike'
+	                    ),
+	                    _react2.default.createElement(
+	                        'p',
+	                        null,
+	                        'F W C'
+	                    ),
+	                    _react2.default.createElement(
+	                        'h1',
+	                        { className: 'form-title' },
+	                        'Your bicycle directions coupled with travel time weather forecast.'
+	                    )
 	                ),
-	                _react2.default.createElement(_TextField2.default, {
-	                    placeholder: '',
-	                    id: 'destination-input',
-	                    hintText: 'Enter your destination',
-	                    inputStyle: { color: '#fff' },
-	                    hintStyle: { color: '#F1F8E9' },
-	
-	                    ref: 'destination'
-	                }),
-	                _react2.default.createElement(_TimePicker2.default, {
-	                    id: 'leave-time',
-	                    hintText: 'Leave time',
-	                    inputStyle: { color: '#fff' },
-	                    hintStyle: { color: '#F1F8E9' },
-	                    ref: 'leaveTime'
-	                }),
-	                _react2.default.createElement(_TextField2.default, {
-	                    placeholder: '',
-	                    id: 'return-destination',
-	                    hintText: 'Start/Return location',
-	                    inputStyle: { color: '#fff' },
-	                    hintStyle: { color: '#F1F8E9' },
-	                    ref: 'returnDestination'
-	                }),
-	                _react2.default.createElement(_TimePicker2.default, {
-	                    id: 'return-time',
-	                    hintText: 'Return time',
-	                    inputStyle: { color: '#fff' },
-	                    hintStyle: { color: '#F1F8E9' },
-	                    ref: 'returnTime'
-	                }),
-	                _react2.default.createElement(_RaisedButton2.default, {
-	                    id: 'form-submit',
-	                    type: 'submit',
-	                    label: 'Submit',
-	                    primary: true
-	                })
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-wrap' },
+	                    _react2.default.createElement(
+	                        'form',
+	                        { className: 'search-form', onSubmit: this.handleSubmit },
+	                        _react2.default.createElement(_TextField2.default, {
+	                            placeholder: '',
+	                            id: 'return-destination',
+	                            hintText: 'Start/Return location',
+	                            inputStyle: { color: '#fff' },
+	                            hintStyle: { color: '#F1F8E9' },
+	                            ref: 'returnDestination',
+	                            fullWidth: true
+	                        }),
+	                        _react2.default.createElement(_TimePicker2.default, {
+	                            id: 'leave-time',
+	                            hintText: 'Leave time',
+	                            inputStyle: { color: '#fff' },
+	                            hintStyle: { color: '#F1F8E9' },
+	                            ref: 'leaveTime',
+	                            fullWidth: true
+	                        }),
+	                        _react2.default.createElement(_TextField2.default, {
+	                            placeholder: '',
+	                            id: 'destination-input',
+	                            hintText: 'Enter your destination',
+	                            inputStyle: { color: '#fff' },
+	                            hintStyle: { color: '#F1F8E9' },
+	                            ref: 'destination',
+	                            fullWidth: true,
+	                            className: 'top-margin'
+	                        }),
+	                        _react2.default.createElement(_TimePicker2.default, {
+	                            id: 'return-time',
+	                            hintText: 'Return time',
+	                            inputStyle: { color: '#fff' },
+	                            hintStyle: { color: '#F1F8E9' },
+	                            ref: 'returnTime',
+	                            fullWidth: true
+	                        }),
+	                        _react2.default.createElement(_RaisedButton2.default, {
+	                            id: 'form-submit',
+	                            type: 'submit',
+	                            label: 'Submit',
+	                            primary: true,
+	                            fullWidth: true,
+	                            className: 'top-margin'
+	                        })
+	                    )
+	                )
 	            );
 	        }
 	    }]);
@@ -54967,6 +55000,103 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+	
+	var _Divider = __webpack_require__(549);
+	
+	var _Divider2 = _interopRequireDefault(_Divider);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _Divider2.default;
+
+/***/ },
+/* 549 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _simpleAssign = __webpack_require__(480);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	var propTypes = {
+	  /**
+	   * The css class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * If true, the `Divider` will be indented `72px`.
+	   */
+	  inset: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	};
+	
+	var defaultProps = {
+	  inset: false
+	};
+	
+	var contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	
+	var Divider = function Divider(props, context) {
+	  var inset = props.inset;
+	  var style = props.style;
+	
+	  var other = _objectWithoutProperties(props, ['inset', 'style']);
+	
+	  var muiTheme = context.muiTheme;
+	  var prepareStyles = muiTheme.prepareStyles;
+	
+	
+	  var styles = {
+	    root: {
+	      margin: 0,
+	      marginTop: -1,
+	      marginLeft: inset ? 72 : 0,
+	      height: 1,
+	      border: 'none',
+	      backgroundColor: muiTheme.baseTheme.palette.borderColor
+	    }
+	  };
+	
+	  return _react2.default.createElement('hr', _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)({}, styles.root, style)) }));
+	};
+	
+	Divider.muiName = 'Divider';
+	Divider.propTypes = propTypes;
+	Divider.defaultProps = defaultProps;
+	Divider.contextTypes = contextTypes;
+	
+	exports.default = Divider;
+
+/***/ },
+/* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	exports.Weather = undefined;
@@ -55056,7 +55186,7 @@
 	exports.default = Weather;
 
 /***/ },
-/* 549 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55106,7 +55236,6 @@
 	        value: function componentDidUpdate() {
 	            this.refs.panel.innerHTML = "";
 	            this.calcRoute(new google.maps.LatLng(this.props.beginning.lat, this.props.beginning.lng), new google.maps.LatLng(this.props.end.lat, this.props.end.lng));
-	            document.getElementById('dest-weather').scrollIntoView();
 	        }
 	    }, {
 	        key: 'calcRoute',
