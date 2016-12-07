@@ -14,6 +14,7 @@ export class SearchForm extends React.Component {
     constructor() {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.setDest = this.setDest.bind(this)
         this.state = {
           leaveTime: "",
           returnTime: "",
@@ -62,6 +63,25 @@ export class SearchForm extends React.Component {
         })
     }
 
+    componentDidUpdate() {
+      if (this.props.fetching) {
+          this.setDest()
+      }
+    }
+
+    setDest() {
+
+
+        this.props.dispatch(destination.setDestination(this.props.findDestination))
+        this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
+        this.props.dispatch(destination.haveLocations())
+        setTimeout(function(){
+          document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' })
+        }, 1000)
+        this.props.dispatch(weather.fetching(false))
+
+    }
+
     handleSubmit(e) {
         e.preventDefault()
         let leaveTime = this.refs.leaveTime.refs.input.input.value
@@ -92,12 +112,6 @@ export class SearchForm extends React.Component {
           this.props.dispatch(destination.dontHaveLocations())
           this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'))
           this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'))
-          this.props.dispatch(destination.haveLocations())
-          this.props.dispatch(destination.setDestination(this.props.findDestination))
-          this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
-          setTimeout(function(){
-            document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' })
-          }, 1000)
         }
     }
 
@@ -172,7 +186,10 @@ let mapStateToProps = (state, props) => {
         returnLocation: state.destinationReducer.returnLocation,
         findDestination: state.destinationReducer.findDestination,
         findReturnDestination: state.destinationReducer.findReturnLocation,
-        haveLocations: state.destinationReducer.haveLocations
+        haveLocations: state.destinationReducer.haveLocations,
+        weatherError: state.weatherReducer.weatherError,
+        fetching: state.weatherReducer.fetching,
+        returnWeather: state.weatherReducer.returnWeather
     }
 }
 

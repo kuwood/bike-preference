@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import AppBar from 'material-ui/AppBar'
 import Paper from 'material-ui/Paper'
 import { lightGreen800, lightGreen900, yellow500 } from 'material-ui/styles/colors'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -10,6 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import SearchForm from './SearchForm'
 import Weather from './Weather'
 import Directions from './Directions'
+import Errors from './Errors'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -20,9 +20,6 @@ const muiTheme = getMuiTheme({
   }
 })
 
-// <AppBar title="Fair Weather Cyclist"
-//   showMenuIconButton={false}
-//   />
 export class Main extends React.Component {
     render() {
         return (
@@ -51,6 +48,7 @@ export class Main extends React.Component {
                                                  end={this.props.returnLocation.latLng} />} />
 
                     ) : null}
+                    <Errors error={this.props.weatherError}/>
                 </div>
             </MuiThemeProvider>
         )
@@ -63,7 +61,8 @@ let mapStateToProps = (state, props) => {
         returnWeather: state.weatherReducer.returnWeather,
         haveLocations: state.destinationReducer.haveLocations,
         destination: state.destinationReducer.destination,
-        returnLocation: state.destinationReducer.returnLocation
+        returnLocation: state.destinationReducer.returnLocation,
+        weatherError: state.weatherReducer.weatherError
     }
 }
 

@@ -23042,7 +23042,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var store = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
-	
+	console.log(store.getState());
 	exports.default = store;
 
 /***/ },
@@ -23162,7 +23162,9 @@
 	        temp: null,
 	        weatherIcon: null,
 	        wind: null
-	    }
+	    },
+	    weatherError: false,
+	    fetching: false
 	};
 	
 	exports.default = initialState;
@@ -23343,17 +23345,6 @@
 	                    weatherIcon: action.destinationWeatherIcon
 	                }
 	            });
-	        case weather.FETCH_DESTINATION_WEATHER_ERROR:
-	            return Object.assign({}, state, {
-	                destinationWeather: {
-	                    temp: 'N/A',
-	                    wind: 'N/A',
-	                    precip: 'N/A',
-	                    snow: 'N/A',
-	                    weatherIcon: 'N/A',
-	                    error: error
-	                }
-	            });
 	        case weather.FETCH_RETURN_WEATHER_SUCCESS:
 	            return Object.assign({}, state, {
 	                returnWeather: {
@@ -23364,16 +23355,13 @@
 	                    weatherIcon: action.returnWeatherIcon
 	                }
 	            });
-	        case weather.FETCH_RETURN_WEATHER_ERROR:
+	        case weather.FETCHING:
 	            return Object.assign({}, state, {
-	                returnWeather: {
-	                    temp: 'N/A',
-	                    wind: 'N/A',
-	                    precip: 'N/A',
-	                    snow: 'N/A',
-	                    weatherIcon: 'N/A',
-	                    error: error
-	                }
+	                fetching: action.fetching
+	            });
+	        case weather.FETCH_WEATHER_ERROR:
+	            return Object.assign({}, state, {
+	                weatherError: action.weatherError
 	            });
 	        default:
 	            return state;
@@ -23391,7 +23379,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.fetchWeather = exports.fetchReturnWeatherError = exports.FETCH_RETURN_WEATHER_ERROR = exports.fetchReturnWeatherSuccess = exports.FETCH_RETURN_WEATHER_SUCCESS = exports.fetchDestinationWeatherError = exports.FETCH_DESTINATION_WEATHER_ERROR = exports.fetchDestinationWeatherSuccess = exports.FETCH_DESTINATION_WEATHER_SUCCESS = undefined;
+	exports.fetchWeather = exports.fetchWeatherError = exports.FETCH_WEATHER_ERROR = exports.fetchReturnWeatherSuccess = exports.FETCH_RETURN_WEATHER_SUCCESS = exports.fetching = exports.FETCHING = exports.fetchDestinationWeatherSuccess = exports.FETCH_DESTINATION_WEATHER_SUCCESS = undefined;
 	
 	var _isomorphicFetch = __webpack_require__(203);
 	
@@ -23429,15 +23417,11 @@
 	    };
 	};
 	
-	var FETCH_DESTINATION_WEATHER_ERROR = exports.FETCH_DESTINATION_WEATHER_ERROR = 'FETCH_DESTINATION_WEATHER_ERROR';
-	var fetchDestinationWeatherError = exports.fetchDestinationWeatherError = function fetchDestinationWeatherError(destinationWeather, error) {
+	var FETCHING = exports.FETCHING = 'FETCHING';
+	var fetching = exports.fetching = function fetching(bool) {
 	    return {
-	        type: FETCH_DESTINATION_WEATHER_ERROR,
-	        destinationTemp: 'N/A',
-	        destinationWind: 'N/A',
-	        destinationPrecip: 'N/A',
-	        destinationSnow: 'N/A',
-	        error: error
+	        type: FETCHING,
+	        fetching: bool
 	    };
 	};
 	
@@ -23453,15 +23437,11 @@
 	    };
 	};
 	
-	var FETCH_RETURN_WEATHER_ERROR = exports.FETCH_RETURN_WEATHER_ERROR = 'FETCH_RETURN_WEATHER_ERROR';
-	var fetchReturnWeatherError = exports.fetchReturnWeatherError = function fetchReturnWeatherError(returnWeather, error) {
+	var FETCH_WEATHER_ERROR = exports.FETCH_WEATHER_ERROR = 'FETCH_WEATHER_ERROR';
+	var fetchWeatherError = exports.fetchWeatherError = function fetchWeatherError(bool) {
 	    return {
-	        type: FETCH_RETURN_WEATHER_ERROR,
-	        returnTemp: 'N/A',
-	        returnWind: 'N/A',
-	        returnPrecip: 'N/A',
-	        returnSnow: 'N/A',
-	        error: error
+	        type: FETCH_WEATHER_ERROR,
+	        weatherError: bool
 	    };
 	};
 	
@@ -23514,11 +23494,13 @@
 	                fetchDirection = dispatch(fetchDestinationWeatherSuccess(weather));
 	            } else {
 	                fetchDirection = dispatch(fetchReturnWeatherSuccess(weather));
+	                dispatch(fetching(true));
 	            }
 	
 	            return fetchDirection;
 	        }).catch(function (error) {
-	            return dispatch(console.log(error));
+	            console.log(error);
+	            return dispatch(fetchWeatherError(true));
 	        });
 	    };
 	};
@@ -38791,13 +38773,17 @@
 	
 	var _SearchForm2 = _interopRequireDefault(_SearchForm);
 	
-	var _Weather = __webpack_require__(551);
+	var _Weather = __webpack_require__(549);
 	
 	var _Weather2 = _interopRequireDefault(_Weather);
 	
-	var _Directions = __webpack_require__(552);
+	var _Directions = __webpack_require__(550);
 	
 	var _Directions2 = _interopRequireDefault(_Directions);
+	
+	var _Errors = __webpack_require__(551);
+	
+	var _Errors2 = _interopRequireDefault(_Errors);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38815,10 +38801,6 @@
 	        pickerHeaderColor: _colors.lightGreen800
 	    }
 	});
-	
-	// <AppBar title="Fair Weather Cyclist"
-	//   showMenuIconButton={false}
-	//   />
 	
 	var Main = exports.Main = function (_React$Component) {
 	    _inherits(Main, _React$Component);
@@ -38850,7 +38832,8 @@
 	                            location: this.props.returnLocation }) }) : null,
 	                    this.props.haveLocations ? _react2.default.createElement(_Paper2.default, { className: 'card directions-card', zDepth: 1,
 	                        children: _react2.default.createElement(_Directions2.default, { beginning: this.props.destination.latLng,
-	                            end: this.props.returnLocation.latLng }) }) : null
+	                            end: this.props.returnLocation.latLng }) }) : null,
+	                    _react2.default.createElement(_Errors2.default, { error: this.props.weatherError })
 	                )
 	            );
 	        }
@@ -38865,7 +38848,8 @@
 	        returnWeather: state.weatherReducer.returnWeather,
 	        haveLocations: state.destinationReducer.haveLocations,
 	        destination: state.destinationReducer.destination,
-	        returnLocation: state.destinationReducer.returnLocation
+	        returnLocation: state.destinationReducer.returnLocation,
+	        weatherError: state.weatherReducer.weatherError
 	    };
 	};
 	
@@ -49801,7 +49785,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	__webpack_require__(550).polyfill();
+	__webpack_require__(548).polyfill();
 	
 	var SearchForm = exports.SearchForm = function (_React$Component) {
 	    _inherits(SearchForm, _React$Component);
@@ -49812,6 +49796,7 @@
 	        var _this = _possibleConstructorReturn(this, (SearchForm.__proto__ || Object.getPrototypeOf(SearchForm)).call(this));
 	
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.setDest = _this.setDest.bind(_this);
 	        _this.state = {
 	            leaveTime: "",
 	            returnTime: "",
@@ -49865,6 +49850,26 @@
 	            });
 	        }
 	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate() {
+	            if (this.props.fetching) {
+	                console.log('yay');
+	                this.setDest();
+	            }
+	        }
+	    }, {
+	        key: 'setDest',
+	        value: function setDest() {
+	
+	            this.props.dispatch(destination.setDestination(this.props.findDestination));
+	            this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination));
+	            this.props.dispatch(destination.haveLocations());
+	            setTimeout(function () {
+	                document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' });
+	            }, 1000);
+	            this.props.dispatch(weather.fetching(false));
+	        }
+	    }, {
 	        key: 'handleSubmit',
 	        value: function handleSubmit(e) {
 	            e.preventDefault();
@@ -49892,12 +49897,6 @@
 	                this.props.dispatch(destination.dontHaveLocations());
 	                this.props.dispatch(weather.fetchWeather(weatherDestination, leaveTime, 'destination'));
 	                this.props.dispatch(weather.fetchWeather(weatherReturnDestination, returnTime, 'return'));
-	                this.props.dispatch(destination.haveLocations());
-	                this.props.dispatch(destination.setDestination(this.props.findDestination));
-	                this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination));
-	                setTimeout(function () {
-	                    document.querySelector('#dest-weather').scrollIntoView({ behavior: 'smooth' });
-	                }, 1000);
 	            }
 	        }
 	    }, {
@@ -49994,7 +49993,10 @@
 	        returnLocation: state.destinationReducer.returnLocation,
 	        findDestination: state.destinationReducer.findDestination,
 	        findReturnDestination: state.destinationReducer.findReturnLocation,
-	        haveLocations: state.destinationReducer.haveLocations
+	        haveLocations: state.destinationReducer.haveLocations,
+	        weatherError: state.weatherReducer.weatherError,
+	        fetching: state.weatherReducer.fetching,
+	        returnWeather: state.weatherReducer.returnWeather
 	    };
 	};
 	
@@ -55024,9 +55026,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 548 */,
-/* 549 */,
-/* 550 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -55323,7 +55323,7 @@
 
 
 /***/ },
-/* 551 */
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55418,7 +55418,7 @@
 	exports.default = Weather;
 
 /***/ },
-/* 552 */
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55511,6 +55511,808 @@
 	}(_react2.default.Component);
 	
 	exports.default = Directions;
+
+/***/ },
+/* 551 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Errors = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Snackbar = __webpack_require__(552);
+	
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+	
+	var _reactRedux = __webpack_require__(172);
+	
+	var _weather = __webpack_require__(202);
+	
+	var weather = _interopRequireWildcard(_weather);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Errors = exports.Errors = function (_React$Component) {
+	  _inherits(Errors, _React$Component);
+	
+	  function Errors(props) {
+	    _classCallCheck(this, Errors);
+	
+	    var _this = _possibleConstructorReturn(this, (Errors.__proto__ || Object.getPrototypeOf(Errors)).call(this, props));
+	
+	    _this.state = {
+	      open: false
+	    };
+	    _this.handleRequestClose = _this.handleRequestClose.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Errors, [{
+	    key: 'handleRequestClose',
+	    value: function handleRequestClose() {
+	      this.setState({
+	        open: false
+	      });
+	      this.props.dispatch(weather.fetchWeatherError(false));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_Snackbar2.default, {
+	          open: this.props.error,
+	          message: 'Error fetching locations, please confirm the address is correct.',
+	          autoHideDuration: 4000,
+	          onRequestClose: this.handleRequestClose
+	        })
+	      );
+	    }
+	  }]);
+	
+	  return Errors;
+	}(_react2.default.Component);
+	
+	exports.default = (0, _reactRedux.connect)()(Errors);
+
+/***/ },
+/* 552 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+	
+	var _Snackbar = __webpack_require__(553);
+	
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _Snackbar2.default;
+
+/***/ },
+/* 553 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _simpleAssign = __webpack_require__(480);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _transitions = __webpack_require__(483);
+	
+	var _transitions2 = _interopRequireDefault(_transitions);
+	
+	var _ClickAwayListener = __webpack_require__(554);
+	
+	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
+	
+	var _SnackbarBody = __webpack_require__(555);
+	
+	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function getStyles(props, context, state) {
+	  var _context$muiTheme = context.muiTheme;
+	  var desktopSubheaderHeight = _context$muiTheme.baseTheme.spacing.desktopSubheaderHeight;
+	  var zIndex = _context$muiTheme.zIndex;
+	  var open = state.open;
+	
+	
+	  var styles = {
+	    root: {
+	      position: 'fixed',
+	      left: 0,
+	      display: 'flex',
+	      right: 0,
+	      bottom: 0,
+	      zIndex: zIndex.snackbar,
+	      visibility: open ? 'visible' : 'hidden',
+	      transform: open ? 'translate(0, 0)' : 'translate(0, ' + desktopSubheaderHeight + 'px)',
+	      transition: _transitions2.default.easeOut('400ms', 'transform') + ', ' + _transitions2.default.easeOut('400ms', 'visibility')
+	    }
+	  };
+	
+	  return styles;
+	}
+	
+	var Snackbar = function (_Component) {
+	  _inherits(Snackbar, _Component);
+	
+	  function Snackbar() {
+	    var _Object$getPrototypeO;
+	
+	    var _temp, _this, _ret;
+	
+	    _classCallCheck(this, Snackbar);
+	
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Snackbar)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.componentClickAway = function () {
+	      if (_this.timerTransitionId) {
+	        // If transitioning, don't close the snackbar.
+	        return;
+	      }
+	
+	      if (_this.props.open !== null && _this.props.onRequestClose) {
+	        _this.props.onRequestClose('clickaway');
+	      } else {
+	        _this.setState({ open: false });
+	      }
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+	
+	  _createClass(Snackbar, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        open: this.props.open,
+	        message: this.props.message,
+	        action: this.props.action
+	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.open) {
+	        this.setAutoHideTimer();
+	        this.setTransitionTimer();
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+	
+	      if (this.props.open && nextProps.open && (nextProps.message !== this.props.message || nextProps.action !== this.props.action)) {
+	        this.setState({
+	          open: false
+	        });
+	
+	        clearTimeout(this.timerOneAtTheTimeId);
+	        this.timerOneAtTheTimeId = setTimeout(function () {
+	          _this2.setState({
+	            message: nextProps.message,
+	            action: nextProps.action,
+	            open: true
+	          });
+	        }, 400);
+	      } else {
+	        var open = nextProps.open;
+	
+	        this.setState({
+	          open: open !== null ? open : this.state.open,
+	          message: nextProps.message,
+	          action: nextProps.action
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      if (prevState.open !== this.state.open) {
+	        if (this.state.open) {
+	          this.setAutoHideTimer();
+	          this.setTransitionTimer();
+	        } else {
+	          clearTimeout(this.timerAutoHideId);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.timerAutoHideId);
+	      clearTimeout(this.timerTransitionId);
+	      clearTimeout(this.timerOneAtTheTimeId);
+	    }
+	  }, {
+	    key: 'setAutoHideTimer',
+	
+	
+	    // Timer that controls delay before snackbar auto hides
+	    value: function setAutoHideTimer() {
+	      var _this3 = this;
+	
+	      var autoHideDuration = this.props.autoHideDuration;
+	
+	      if (autoHideDuration > 0) {
+	        clearTimeout(this.timerAutoHideId);
+	        this.timerAutoHideId = setTimeout(function () {
+	          if (_this3.props.open !== null && _this3.props.onRequestClose) {
+	            _this3.props.onRequestClose('timeout');
+	          } else {
+	            _this3.setState({ open: false });
+	          }
+	        }, autoHideDuration);
+	      }
+	    }
+	
+	    // Timer that controls delay before click-away events are captured (based on when animation completes)
+	
+	  }, {
+	    key: 'setTransitionTimer',
+	    value: function setTransitionTimer() {
+	      var _this4 = this;
+	
+	      this.timerTransitionId = setTimeout(function () {
+	        _this4.timerTransitionId = undefined;
+	      }, 400);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var autoHideDuration = _props.autoHideDuration;
+	      var messageProp = _props.message;
+	      var onRequestClose = _props.onRequestClose;
+	      var onActionTouchTap = _props.onActionTouchTap;
+	      var style = _props.style;
+	      var bodyStyle = _props.bodyStyle;
+	
+	      var other = _objectWithoutProperties(_props, ['autoHideDuration', 'message', 'onRequestClose', 'onActionTouchTap', 'style', 'bodyStyle']);
+	
+	      var _state = this.state;
+	      var action = _state.action;
+	      var message = _state.message;
+	      var open = _state.open;
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+	
+	      var styles = getStyles(this.props, this.context, this.state);
+	
+	      return _react2.default.createElement(
+	        _ClickAwayListener2.default,
+	        { onClickAway: open && this.componentClickAway },
+	        _react2.default.createElement(
+	          'div',
+	          _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	          _react2.default.createElement(_SnackbarBody2.default, {
+	            open: open,
+	            message: message,
+	            action: action,
+	            style: bodyStyle,
+	            onActionTouchTap: onActionTouchTap
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Snackbar;
+	}(_react.Component);
+	
+	Snackbar.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * The number of milliseconds to wait before automatically dismissing.
+	   * If no value is specified the snackbar will dismiss normally.
+	   * If a value is provided the snackbar can still be dismissed normally.
+	   * If a snackbar is dismissed before the timer expires, the timer will be cleared.
+	   */
+	  autoHideDuration: _react.PropTypes.number,
+	  /**
+	   * Override the inline-styles of the body element.
+	   */
+	  bodyStyle: _react.PropTypes.object,
+	  /**
+	   * The css class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * Fired when the `Snackbar` is requested to be closed by a click outside the `Snackbar`, or after the
+	   * `autoHideDuration` timer expires.
+	   *
+	   * Typically `onRequestClose` is used to set state in the parent component, which is used to control the `Snackbar`
+	   * `open` prop.
+	   *
+	   * The `reason` parameter can optionally be used to control the response to `onRequestClose`,
+	   * for example ignoring `clickaway`.
+	   *
+	   * @param {string} reason Can be:`"timeout"` (`autoHideDuration` expired) or: `"clickaway"`
+	   */
+	  onRequestClose: _react.PropTypes.func,
+	  /**
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	};
+	Snackbar.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	exports.default = Snackbar;
+
+/***/ },
+/* 554 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _reactDom = __webpack_require__(34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	var _events = __webpack_require__(489);
+	
+	var _events2 = _interopRequireDefault(_events);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var isDescendant = function isDescendant(el, target) {
+	  if (target !== null) {
+	    return el === target || isDescendant(el, target.parentNode);
+	  }
+	  return false;
+	};
+	
+	var clickAwayEvents = ['mouseup', 'touchend'];
+	var bind = function bind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.on(document, event, callback);
+	  });
+	};
+	var unbind = function unbind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.off(document, event, callback);
+	  });
+	};
+	
+	var ClickAwayListener = function (_Component) {
+	  _inherits(ClickAwayListener, _Component);
+	
+	  function ClickAwayListener() {
+	    var _Object$getPrototypeO;
+	
+	    var _temp, _this, _ret;
+	
+	    _classCallCheck(this, ClickAwayListener);
+	
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(ClickAwayListener)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.handleClickAway = function (event) {
+	      if (event.defaultPrevented) {
+	        return;
+	      }
+	
+	      // IE11 support, which trigger the handleClickAway even after the unbind
+	      if (_this.isCurrentlyMounted) {
+	        var el = _reactDom2.default.findDOMNode(_this);
+	
+	        if (document.documentElement.contains(event.target) && !isDescendant(el, event.target)) {
+	          _this.props.onClickAway(event);
+	        }
+	      }
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+	
+	  _createClass(ClickAwayListener, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.isCurrentlyMounted = true;
+	      if (this.props.onClickAway) {
+	        bind(this.handleClickAway);
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (prevProps.onClickAway !== this.props.onClickAway) {
+	        unbind(this.handleClickAway);
+	        if (this.props.onClickAway) {
+	          bind(this.handleClickAway);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.isCurrentlyMounted = false;
+	      unbind(this.handleClickAway);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return this.props.children;
+	    }
+	  }]);
+	
+	  return ClickAwayListener;
+	}(_react.Component);
+	
+	ClickAwayListener.propTypes = {
+	  children: _react.PropTypes.node,
+	  onClickAway: _react.PropTypes.any
+	};
+	exports.default = ClickAwayListener;
+
+/***/ },
+/* 555 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.SnackbarBody = undefined;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _simpleAssign = __webpack_require__(480);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _transitions = __webpack_require__(483);
+	
+	var _transitions2 = _interopRequireDefault(_transitions);
+	
+	var _withWidth = __webpack_require__(556);
+	
+	var _withWidth2 = _interopRequireDefault(_withWidth);
+	
+	var _FlatButton = __webpack_require__(543);
+	
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	function getStyles(props, context) {
+	  var open = props.open;
+	  var width = props.width;
+	  var _context$muiTheme = context.muiTheme;
+	  var _context$muiTheme$bas = _context$muiTheme.baseTheme;
+	  var _context$muiTheme$bas2 = _context$muiTheme$bas.spacing;
+	  var desktopGutter = _context$muiTheme$bas2.desktopGutter;
+	  var desktopSubheaderHeight = _context$muiTheme$bas2.desktopSubheaderHeight;
+	  var fontFamily = _context$muiTheme$bas.fontFamily;
+	  var _context$muiTheme$sna = _context$muiTheme.snackbar;
+	  var backgroundColor = _context$muiTheme$sna.backgroundColor;
+	  var textColor = _context$muiTheme$sna.textColor;
+	  var actionColor = _context$muiTheme$sna.actionColor;
+	
+	
+	  var isSmall = width === _withWidth.SMALL;
+	
+	  var styles = {
+	    root: {
+	      fontFamily: fontFamily,
+	      backgroundColor: backgroundColor,
+	      padding: '0 ' + desktopGutter + 'px',
+	      height: desktopSubheaderHeight,
+	      lineHeight: desktopSubheaderHeight + 'px',
+	      borderRadius: isSmall ? 0 : 2,
+	      maxWidth: isSmall ? 'inherit' : 568,
+	      minWidth: isSmall ? 'inherit' : 288,
+	      flexGrow: isSmall ? 1 : 0,
+	      margin: 'auto'
+	    },
+	    content: {
+	      fontSize: 14,
+	      color: textColor,
+	      opacity: open ? 1 : 0,
+	      transition: open ? _transitions2.default.easeOut('500ms', 'opacity', '100ms') : _transitions2.default.easeOut('400ms', 'opacity')
+	    },
+	    action: {
+	      color: actionColor,
+	      float: 'right',
+	      marginTop: 6,
+	      marginRight: -16,
+	      marginLeft: desktopGutter,
+	      backgroundColor: 'transparent'
+	    }
+	  };
+	
+	  return styles;
+	}
+	
+	var SnackbarBody = exports.SnackbarBody = function SnackbarBody(props, context) {
+	  var open = props.open;
+	  var action = props.action;
+	  var message = props.message;
+	  var onActionTouchTap = props.onActionTouchTap;
+	  var style = props.style;
+	
+	  var other = _objectWithoutProperties(props, ['open', 'action', 'message', 'onActionTouchTap', 'style']);
+	
+	  var prepareStyles = context.muiTheme.prepareStyles;
+	
+	  var styles = getStyles(props, context);
+	
+	  var actionButton = action && _react2.default.createElement(_FlatButton2.default, {
+	    style: styles.action,
+	    label: action,
+	    onTouchTap: onActionTouchTap
+	  });
+	
+	  return _react2.default.createElement(
+	    'div',
+	    _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	    _react2.default.createElement(
+	      'div',
+	      { style: prepareStyles(styles.content) },
+	      _react2.default.createElement(
+	        'span',
+	        null,
+	        message
+	      ),
+	      actionButton
+	    )
+	  );
+	};
+	
+	SnackbarBody.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * @ignore
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * @ignore
+	   * Width of the screen.
+	   */
+	  width: _react.PropTypes.number.isRequired
+	};
+	
+	SnackbarBody.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	
+	exports.default = (0, _withWidth2.default)()(SnackbarBody);
+
+/***/ },
+/* 556 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.LARGE = exports.MEDIUM = exports.SMALL = undefined;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	exports.default = withWidth;
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactEventListener = __webpack_require__(524);
+	
+	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var SMALL = exports.SMALL = 1;
+	var MEDIUM = exports.MEDIUM = 2;
+	var LARGE = exports.LARGE = 3;
+	
+	function withWidth() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var _options$largeWidth = options.largeWidth;
+	  var largeWidth = _options$largeWidth === undefined ? 992 : _options$largeWidth;
+	  var _options$mediumWidth = options.mediumWidth;
+	  var mediumWidth = _options$mediumWidth === undefined ? 768 : _options$mediumWidth;
+	  var _options$resizeInterv = options.resizeInterval;
+	  var resizeInterval = _options$resizeInterv === undefined ? 166 : _options$resizeInterv;
+	
+	
+	  return function (MyComponent) {
+	    return function (_Component) {
+	      _inherits(WithWidth, _Component);
+	
+	      function WithWidth() {
+	        var _Object$getPrototypeO;
+	
+	        var _temp, _this, _ret;
+	
+	        _classCallCheck(this, WithWidth);
+	
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+	
+	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(WithWidth)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	          /**
+	           * For the server side rendering,
+	           * let's set the width for the slower environment.
+	           */
+	          width: SMALL
+	        }, _this.handleResize = function () {
+	          clearTimeout(_this.deferTimer);
+	          _this.deferTimer = setTimeout(function () {
+	            _this.updateWidth();
+	          }, resizeInterval);
+	        }, _temp), _possibleConstructorReturn(_this, _ret);
+	      }
+	
+	      _createClass(WithWidth, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	          this.updateWidth();
+	        }
+	      }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	          clearTimeout(this.deferTimer);
+	        }
+	      }, {
+	        key: 'updateWidth',
+	        value: function updateWidth() {
+	          var innerWidth = window.innerWidth;
+	          var width = void 0;
+	
+	          if (innerWidth >= largeWidth) {
+	            width = LARGE;
+	          } else if (innerWidth >= mediumWidth) {
+	            width = MEDIUM;
+	          } else {
+	            // innerWidth < 768
+	            width = SMALL;
+	          }
+	
+	          if (width !== this.state.width) {
+	            this.setState({
+	              width: width
+	            });
+	          }
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          return _react2.default.createElement(
+	            _reactEventListener2.default,
+	            { target: 'window', onResize: this.handleResize },
+	            _react2.default.createElement(MyComponent, _extends({}, this.props, {
+	              width: this.state.width
+	            }))
+	          );
+	        }
+	      }]);
+	
+	      return WithWidth;
+	    }(_react.Component);
+	  };
+	}
 
 /***/ }
 /******/ ]);
