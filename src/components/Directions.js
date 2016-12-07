@@ -34,7 +34,7 @@ export class Directions extends React.Component {
                 this.props.end.lng
             )
         )
-        document.getElementById('dest-weather').scrollIntoView()
+
     }
 
     calcRoute(start, end) {

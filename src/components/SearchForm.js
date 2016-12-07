@@ -1,9 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+
 import TextField from 'material-ui/TextField'
 import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
+import Divider from 'material-ui/Divider'
 
 import * as destination from '../actions/destination'
 import * as weather from '../actions/weather'
@@ -64,52 +66,65 @@ export class SearchForm extends React.Component {
         console.log(this.props.findDestination)
         this.props.dispatch(destination.setDestination(this.props.findDestination))
         this.props.dispatch(destination.setReturnDestination(this.props.findReturnDestination))
-
     }
 
     render() {
 
         return (
-            <form className='search-form' onSubmit={this.handleSubmit}>
-                <h3 className="form-title">Plan your route</h3>
-                <TextField
-                    placeholder=""
-                    id="destination-input"
-                    hintText="Enter your destination"
-                    inputStyle={{color: '#fff'}}
-                    hintStyle={{color: '#F1F8E9'}}
-
-                    ref="destination"
-                />
-                <TimePicker
-                    id="leave-time"
-                    hintText="Leave time"
-                    inputStyle={{color: '#fff'}}
-                    hintStyle={{color: '#F1F8E9'}}
-                    ref="leaveTime"
-                />
-                <TextField
-                    placeholder=""
-                    id="return-destination"
-                    hintText="Start/Return location"
-                    inputStyle={{color: '#fff'}}
-                    hintStyle={{color: '#F1F8E9'}}
-                    ref="returnDestination"
-                />
-                <TimePicker
-                    id="return-time"
-                    hintText="Return time"
-                    inputStyle={{color: '#fff'}}
-                    hintStyle={{color: '#F1F8E9'}}
-                    ref="returnTime"
-                />
-                <RaisedButton
-                    id="form-submit"
-                    type="submit"
-                    label="Submit"
-                    primary={true}
-                />
-            </form>
+            <div className="content">
+                <div className="logo">
+                  <i className="material-icons logo-icon">directions_bike</i>
+                  <p>F W C</p>
+                  <h1 className="form-title">Your bicycle directions coupled with travel time weather forecast.</h1>
+                </div>
+                <div className="form-wrap">
+                  <form className='search-form' onSubmit={this.handleSubmit}>
+                      <TextField
+                          placeholder=""
+                          id="return-destination"
+                          hintText="Start/Return location"
+                          inputStyle={{color: '#fff'}}
+                          hintStyle={{color: '#F1F8E9'}}
+                          ref="returnDestination"
+                          fullWidth={true}
+                      />
+                      <TimePicker
+                          id="leave-time"
+                          hintText="Leave time"
+                          inputStyle={{color: '#fff'}}
+                          hintStyle={{color: '#F1F8E9'}}
+                          ref="leaveTime"
+                          fullWidth={true}
+                      />
+                      <TextField
+                          placeholder=""
+                          id="destination-input"
+                          hintText="Enter your destination"
+                          inputStyle={{color: '#fff'}}
+                          hintStyle={{color: '#F1F8E9'}}
+                          ref="destination"
+                          fullWidth={true}
+                          className="top-margin"
+                      />
+                      <TimePicker
+                          id="return-time"
+                          hintText="Return time"
+                          inputStyle={{color: '#fff'}}
+                          hintStyle={{color: '#F1F8E9'}}
+                          ref="returnTime"
+                          fullWidth={true}
+                      />
+                      <RaisedButton
+                          id="form-submit"
+                          type="submit"
+                          label="Submit"
+                          primary={true}
+                          fullWidth={true}
+                          className="top-margin"
+                      />
+                  </form>
+                </div>
+            </div>
         )
     }
 }

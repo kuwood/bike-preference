@@ -20,14 +20,14 @@ const muiTheme = getMuiTheme({
   }
 })
 
+// <AppBar title="Fair Weather Cyclist"
+//   showMenuIconButton={false}
+//   />
 export class Main extends React.Component {
     render() {
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <div  className='wrapper'>
-                    <AppBar title="Fair Weather Cyclist"
-                        showMenuIconButton={false}
-                    />
                     <Paper className='card search-card' zDepth={2} children={<SearchForm />} />
 
                     {(this.props.haveLocations) ? (
