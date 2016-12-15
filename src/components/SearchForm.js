@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-// import { polyfill } from 'smoothscroll-polyfill'
+import { polyfill } from 'smoothscroll-polyfill'
+const smooth = polyfill()
 
 import TextField from 'material-ui/TextField'
 import TimePicker from 'material-ui/TimePicker'
