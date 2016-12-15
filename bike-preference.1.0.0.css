@@ -50,8 +50,12 @@
   max-width: 80%;
 }
 .logo-icon {
+  color: rgba(255, 255, 255, 0.3);
   font-size: 100px !important;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.logo > p {
+  color: rgba(255, 255, 255, 0.3);
 }
 .weather-card {
   width: 100%;
