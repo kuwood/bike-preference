@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import TestUtils from 'react-addons-test-utils'
 import { should } from 'chai'
 should()
-
+import 'jsdom-global/register'
 import ConnectedMain, { Main } from '../components/Main'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'

@@ -78,6 +78,8 @@
     "chai": "^3.5.0",
     "chokidar-cli": "^1.2.0",
     "istanbul": "1.1.0-alpha.1",
+    "jsdom": "9.9.1",
+    "jsdom-global": "2.1.1",
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
     "mocha": "^3.1.0",
