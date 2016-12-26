@@ -27,16 +27,12 @@ export const fetchDestinationWeatherSuccess = (destinationWeather) => {
     }
 }
 
-export const FETCH_DESTINATION_WEATHER_ERROR = 'FETCH_DESTINATION_WEATHER_ERROR'
-export const fetchDestinationWeatherError = (destinationWeather, error) => {
-    return {
-        type: FETCH_DESTINATION_WEATHER_ERROR,
-        destinationTemp: 'N/A',
-        destinationWind: 'N/A',
-        destinationPrecip: 'N/A',
-        destinationSnow: 'N/A',
-        error: error
-    }
+export const FETCHING = 'FETCHING'
+export const fetching = (bool) => {
+  return {
+    type: FETCHING,
+    fetching: bool
+  }
 }
 
 export const FETCH_RETURN_WEATHER_SUCCESS = 'FETCH_RETURN_WEATHER_SUCCESS'
@@ -51,15 +47,11 @@ export const fetchReturnWeatherSuccess = (returnWeather) => {
     }
 }
 
-export const FETCH_RETURN_WEATHER_ERROR = 'FETCH_RETURN_WEATHER_ERROR'
-export const fetchReturnWeatherError = (returnWeather, error) => {
+export const FETCH_WEATHER_ERROR = 'FETCH_WEATHER_ERROR'
+export const fetchWeatherError = bool => {
     return {
-        type: FETCH_RETURN_WEATHER_ERROR,
-        returnTemp: 'N/A',
-        returnWind: 'N/A',
-        returnPrecip: 'N/A',
-        returnSnow: 'N/A',
-        error: error
+        type: FETCH_WEATHER_ERROR,
+        weatherError: bool
     }
 }
 
@@ -93,12 +85,14 @@ export let fetchWeather = (location, time, assignment) => {
                 fetchDirection = dispatch(fetchDestinationWeatherSuccess(weather))
             } else {
                 fetchDirection = dispatch(fetchReturnWeatherSuccess(weather))
+                dispatch(fetching(true))
             }
 
             return fetchDirection
         })
         .catch(error => {
-            return dispatch(console.log(error))
+            console.log(error);
+            return dispatch(fetchWeatherError(true))
         })
     }
 }

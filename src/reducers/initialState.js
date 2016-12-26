@@ -45,7 +45,9 @@ const initialState = {
         temp: null,
         weatherIcon: null,
         wind: null
-    }
+    },
+    weatherError: false,
+    fetching: false
 }
 
 export default initialState

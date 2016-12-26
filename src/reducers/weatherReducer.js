@@ -13,17 +13,6 @@ function weatherReducer(state = initialState, action) {
                     weatherIcon: action.destinationWeatherIcon
                 }
             })
-        case weather.FETCH_DESTINATION_WEATHER_ERROR:
-            return Object.assign({}, state, {
-                destinationWeather: {
-                    temp: 'N/A',
-                    wind: 'N/A',
-                    precip: 'N/A',
-                    snow: 'N/A',
-                    weatherIcon: 'N/A',
-                    error: error
-                }
-            })
         case weather.FETCH_RETURN_WEATHER_SUCCESS:
             return Object.assign({}, state, {
                 returnWeather: {
@@ -34,16 +23,13 @@ function weatherReducer(state = initialState, action) {
                     weatherIcon: action.returnWeatherIcon
                 }
             })
-        case weather.FETCH_RETURN_WEATHER_ERROR:
+        case weather.FETCHING:
             return Object.assign({}, state, {
-                returnWeather: {
-                    temp: 'N/A',
-                    wind: 'N/A',
-                    precip: 'N/A',
-                    snow: 'N/A',
-                    weatherIcon: 'N/A',
-                    error: error
-                }
+                fetching: action.fetching
+            })
+        case weather.FETCH_WEATHER_ERROR:
+            return Object.assign({}, state, {
+                weatherError: action.weatherError
             })
         default:
             return state
