@@ -23447,7 +23447,7 @@
 	var fetchWeather = exports.fetchWeather = function fetchWeather(location, time, assignment) {
 	    return function (dispatch) {
 	        var timeFormatted = ConvertTimeFormat(time);
-	        var url = 'http://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/' + location.region + '/' + location.city + '.json';
+	        var url = 'https://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/' + location.region + '/' + location.city + '.json';
 	        return (0, _isomorphicFetch2.default)(url).then(function (response) {
 	            if (response.status < 200 || response.status >= 300) {
 	                var error = new Error(response.statusText);
