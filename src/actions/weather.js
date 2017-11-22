@@ -58,7 +58,7 @@ export const fetchWeatherError = bool => {
 export let fetchWeather = (location, time, assignment) => {
     return dispatch => {
         let timeFormatted = ConvertTimeFormat(time)
-        let url = `http://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/${location.region}/${location.city}.json`
+        let url = `https://api.wunderground.com/api/3cd1761cfe1a8ddb/hourly/q/${location.region}/${location.city}.json`
         return fetch(url).then(response => {
             if (response.status < 200 || response.status >= 300) {
                 let error = new Error(response.statusText)
