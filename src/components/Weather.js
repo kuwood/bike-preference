@@ -11,7 +11,7 @@ export class Weather extends React.Component {
                     <p className='weather-item weather-temp'>{this.props.weather.temp}{String.fromCharCode(176)}</p>
                 </div>
                 <div className='weather-col'>
-                    <img src={this.props.weather.weatherIcon}></img>
+                    <img src={this.props.weather.weatherIcon.replace('http','https')}></img>
                 </div>
                 <div className='weather-col'>
                     <p className='weather-item'>Wind: {this.props.weather.wind}</p>
